@@ -1,0 +1,13 @@
+/** Sample queries for agriculture input network
+*/
+query selectProduct {
+  description: "Select all Products"
+  statement:
+      SELECT org.acme.agriinputnetwork.Product
+}
+
+query selectOrder {
+  description: "Select all Orders"
+  statement:
+      SELECT org.acme.agriinputnetwork.Order
+}

@@ -1,0 +1,37 @@
+<div class="row">
+    <div class="ibox">
+        <div class="scrollingPaneLeft ibox-content">
+            <h3 class="" id="npm">Network Profile Management</h3>
+            <table class="table" id="businessNetworkManagement" width="98%"><tr><th id="bnm_api">API</th><th id="bnm_param">Parameters</th></tr>
+                <tr><td onclick="networkDeploy()" class="showfocus" id="bnm_nd_api">Deploy a network</td><td id="bnm_nd_param">network archive file, options</td></tr>
+                <tr><td onclick="networkInstall()" class="showfocus" id="bnm_ni_api">install new a network</td><td id="bnm_ni_param">network archive file, options</td></tr>
+                <tr><td onclick="networkStart()" class="showfocus" id="bnm_ns_api">start an installed network</td><td id="bnm_ns_param">network name, options</td></tr>
+                <tr><td onclick="adminList()" class="showfocus" id="bnm_nl_api">list the deployed business networks</td><td id="bnm_nl_param">(none)</td></tr>
+                <tr><td onclick="ping()" class="showfocus" id="bnm_np_api">touch a network, check compatibility</td><td id="bnm_np_param">business network name</td></tr>
+                <tr><td onclick="networkUndeploy()" class="showfocus" id="bnm_nu_api">take a business network off line</td><td id="bnm_nu_param">business network name</td></tr>
+                <tr><td onclick="networkUpdate()" class="showfocus" id="bnm_nuu_api">update an existing business network</td><td id="bnm_nuu_param">business network name, archive file</td></tr>
+            </table>
+            <h3 id="rm">Resource Management</h3>
+            <table id="resourceManagement" width="98%"><tr><th id="rm_api">API</th><th id="rm_param">Parameters</th></tr>
+                <tr><td onclick="listRegistry()" class="showfocus" id="rm_lr_api">list members of a registry</td><td><select id="registryName" width="25%"></td></tr>
+                <tr><td onclick="listAssets()" class="showfocus" id="rm_la_api">List Assets in the registry</td><td><select id="assetName" width="25%"></select></td></tr>
+                <tr><td onclick="addMember()" class="showfocus" id="rm_am_api">Add Member</td><td id="rm_am_param">Co Name, id, Type</td></tr>
+                <tr><td onclick="issueIdentity()" class="showfocus" id="rm_ii_api">Issue Identity</td><td><select id="registryName2" width="25%"></select></td></tr>
+                <tr><td onclick="checkCard()" class="showfocus" id="rm_cc_api">Check if card exists</td><td><select id="registryName3" width="25%"></select></td></tr>
+                <tr><td onclick="createCard()" class="showfocus" id="rm_cc2_api">Create Card</td><td><select id="registryName4" width="25%"></select></td></tr>
+                <tr><td onclick="removeMember()" class="showfocus" id="rm_rm_api">Remove Member</td><td><select id="registryName5" width="25%"></td></tr>
+            </table>
+            <h3 id="bc"></h3>
+            <table id="blockchain" width="98%"><tr><th id="bc_api">API</th><th id="bc_param">Parameters</th></tr>
+                <tr><td onclick="getChainInfo()" class="showfocus" id="bc_gi_api">initiate connection to blockchain</td><td id="bc_gi_param">(none)</td></tr>
+                <tr><td onclick="getChainEvents()" class="showfocus" id="bc_ge_api">register for blockchain events</td><td id="bc_ge_param">(none)</td></tr>
+                <tr><td onclick="getHistorian()" class="showfocus" id="bc_gh_api">get Historian</td><td id="bc_gh_param">(none)</td></tr>
+            </table>
+        </div>
+        <div class="scrollingPaneRight ibox-content">
+            <div class="" id="admin-forms" ></div>
+            <div id="messages"></div>
+        </div>
+    </div>
+</div>
+</div>

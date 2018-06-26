@@ -1,0 +1,46 @@
+
+<div>
+    <h1 align="center">Create Product</h1>
+    <h4><span id = 'selectAgriOrg'>Select Agriculture Org</span><select id="agriOrg"></select></h4>
+    <table width="100%">
+        <tr>
+            <th>Product Id</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Approved</th>
+        </tr>
+        <tr>
+            <td id="productId" align="center"></td>
+            <td id="status" align="center"></td>
+            <td id="today" align="center"></td>
+            <td id="approved" align="center"></td>
+        </tr>
+    </table>
+    <table width="100%">
+        <tr><td align="center" width="36%">Product Name</td><td><input type="text" id="productName"></td></tr>
+        <tr><td align="center" width="36%">ProductType</td><td><input type="text" id="productType"></td></tr>
+        <tr><td align="center" width="36%">Best Before</td><td><input type="text" id="bestBefore"></td></tr>
+        <tr><td align="center" width="36%">MRP</td><td><input type="number" id="mrp"></td></tr>
+    </table>
+    <table width="100%">
+        <tr>
+            <td width="10%">Enter Content</td>
+            <td width="55%">Content Name</td>
+            <td width="20%">Percentage</td>
+            <td width="15%"><button class="showfocus" id="addContent">Add Content</button></td>
+        </tr>
+    </table>
+    <table width="100%" id="contentTable">
+        <tr>
+            <td width="10%" id="contentNo">&nbsp;</td>
+            <td width="55%"><input type="text" id="contentName"></td>
+            <td width="15%"><input class="showfocus" type="number" id="contentPercentage"></td>
+            <td width="20%"></td>
+        </tr>
+    </table>
+
+</div>
+<div>
+    <button class-"wide" id="cancelNewProduct">Cancel</button> 
+    <button class-"wide" id="submitNewProduct">Submit</button>
+</div>

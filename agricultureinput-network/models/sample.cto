@@ -1,0 +1,186 @@
+namespace org.acme.agriinputnetwork
+import composer.base.*
+
+participant Manufacturer identified by manufacturerId extends Member {
+    o String manufacturerId
+}
+
+participant FinanceCo identified by financeCoId extends Member {
+    o String financeCoId
+}
+
+participant GovernmentFinanceBody identified by govFinanceId extends Member {
+    o String govFinanceId
+}
+
+participant AgricultureOrganisation identified by agriOrganisationId extends Member {
+    o String agriOrganisationId
+}
+
+participant Retailer identified by retailerId extends Member {
+    o String retailerId
+}
+
+asset Product identified by productId {
+    o String productId
+    o String productName
+    o Boolean approved default = false
+    o String rating default = '0'
+    o Integer mrp
+    o Integer subsidy
+    o String[] batches
+    o String[] content
+    o String status
+    o String requestApproval
+    o String rejectProduct
+    o String approveProduct
+    o String productCreated
+    o Integer totalQuantity default = 0
+    o String bestBefore default = '0 Month'
+    o String productType
+    --> Manufacturer manufacturer
+    --> AgricultureOrganisation agriOrganisation
+}
+
+
+asset Order identified by orderId {
+    o String orderId
+    o String status
+    o String dispute
+    o String resolve
+    o String refund
+    o Integer amount
+    o String created
+    o String cancelled
+    o String accepted
+    o String ordered
+    o String delivered
+    o String delivering
+    o String disputeOpened
+    o String disputeResolved
+    o String paymentRequested
+    o String orderRefunded
+    o String approved
+    o String paid
+    o String[] items
+    --> Manufacturer manufacturer
+    --> Retailer retailer
+    --> FinanceCo financeCo
+}
+
+transaction CreateProduct {
+    o String productName
+    o String[] content
+    o String productType
+    o String bestBefore
+    o Integer mrp
+    --> Product product
+    --> Manufacturer manufacturer
+    --> AgricultureOrganisation agriOrganisation
+}
+
+transaction RequestApproval {
+    --> Product product
+    --> Manufacturer manufacturer
+    --> AgricultureOrganisation agriOrganisation
+}
+
+transaction RejectProduct {
+    o Boolean approved
+    --> Product product
+    --> Manufacturer manufacturer
+    --> AgricultureOrganisation agriOrganisation
+}
+
+transaction ApproveProduct {
+    o Boolean approved
+    o String rating
+    --> Product product
+    --> Manufacturer manufacturer
+    --> AgricultureOrganisation agriOrganisation
+}
+
+transaction ManufactureProduct {
+  o Integer quantity
+  --> Product product
+  --> Manufacturer manufacturer
+}
+
+transaction CreateOrder {
+    o Integer amount
+    o String[] items
+    --> Order order
+    --> Manufacturer manufacturer
+    --> Retailer retailer
+    --> FinanceCo financeCo
+}
+
+transaction PlaceOrder {
+    --> Order order
+    --> Manufacturer manufacturer
+    --> Retailer retailer
+}
+
+transaction CancelOrder {
+    --> Order order
+    --> Manufacturer manufacturer
+    --> Retailer retailer
+}
+
+transaction AcceptOrder {
+    --> Order order
+    --> Manufacturer manufacturer
+}
+
+transaction Delivering {
+    o String status
+    --> Order order
+    --> Manufacturer manufacturer
+}
+
+transaction Deliver {
+    --> Order order
+    --> Manufacturer manufacturer
+}
+
+transaction Dispute {
+    o String dispute
+    --> Order order
+    --> Manufacturer manufacturer
+    --> Retailer retailer
+    --> FinanceCo financeCo
+}
+
+transaction Resolve {
+    o String resolve
+    --> Order order
+    --> Manufacturer manufacturer
+    --> Retailer retailer
+    --> FinanceCo financeCo
+}
+
+transaction RequestPayment {
+    --> Order order
+    --> Retailer retailer
+    --> Manufacturer manufacturer
+    --> FinanceCo financeCo
+}
+
+transaction AuthorizePayment {
+    --> Order order
+    --> Retailer retailer
+    --> FinanceCo financeCo
+}
+
+transaction Pay {
+    --> Order order
+    --> Manufacturer manufacturer
+    --> FinanceCo financeCo
+}
+
+transaction Refund {
+    o String refund
+    --> Order order
+    --> Manufacturer manufacturer
+    --> FinanceCo financeCo
+}

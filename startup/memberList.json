@@ -1,0 +1,36 @@
+{ "members":
+    [
+        {"type":"Manufacturer", "pw":"hermione", "companyName":"National Agro Ind", "id":"hermione@nai.com"},
+        {"type":"Manufacturer", "pw":"ron", "companyName":"DuPont India", "id":"ron@dupont.com"},
+        {"type":"Manufacturer", "pw":"harry", "companyName":"Rallies India Ltd", "id":"harry@rallies.com"},
+        {"type":"Retailer", "pw":"severus", "companyName":"battle inc", "id":"severus@battle.com"},
+        {"type":"Retailer", "pw":"salazar", "companyName":"slytherin", "id":"salazar@slytherin.com"},
+        {"type":"Retailer", "pw":"rowena", "companyName":"ravenclaw", "id":"rowena@ravenclaw.com"},
+        {"type":"Retailer", "pw":"godric", "companyName":"gryffindor", "id":"godric@gryffindor.com"},
+        {"type":"Retailer", "pw":"albus", "companyName":"phoenix", "id":"albus@phoenix.com"},
+        {"type":"Retailer", "pw":"garric", "companyName":"Ollivander", "id":"garric@ollivander.com"},
+        {"type":"Retailer", "pw":"rita", "companyName":"daily prophet", "id":"rita@prophet.com"},
+        {"type":"Retailer", "pw":"rolanda", "companyName":"quidditch", "id":"rolanda@quidditch.com"},
+        {"type":"FinanceCo", "pw":"bogrod", "companyName":"gringotts", "id":"bogrod@gringotts.com"},
+        {"type":"GovernmentFinanceBody", "pw":"griphook", "companyName":"Nabard", "id":"griphook@nabard.com"},
+        {"type":"AgricultureOrganisation", "pw":"tom", "companyName":"Department of Agriculture", "id":"tom@doa.com"}
+    ],
+    "assets":
+    [
+        {"type":"Product" , "id":"hermione@nai.com001", "productName":"Monocoto", "productType":"Synthetic Fertilizer","approved":true, "rating":"7", "manufacturer":"hermione@nai.com" , "agriOrg":"tom@doa.com", "content":[{"contentNo":"1","name":"Nitrogen","percentage":"50"},{"contentNo":"2","name":"Cu","percentage":"40"}],"mrp":600},
+        {"type":"Product" , "id":"hermione@nai.com002", "productName":"DieKoto", "productType":"Synthetic Fertilizer" , "approved":true, "rating":"4", "manufacturer":"hermione@nai.com" , "agriOrg":"tom@doa.com", "content":[{"contentNo":"1","name":"Nitrogen","percentage":"50"}],"mrp":250},
+        {"type":"Product" , "id":"ron@dupont.com001", "productName":"NPK", "productType":"Fertilizer" , "approved":true, "rating":"3", "manufacturer":"ron@dupont.com" , "agriOrg":"tom@doa.com", "content":[{"contentNo":"1","name":"Nitrogen","percentage":"50"},{"contentNo":"1","name":"Cu","percentage":"40"}],"mrp":350},
+        {"type":"Product" , "id":"ron@dupont.com002", "productName":"Uria", "productType":"" , "approved":false, "rating":"0", "manufacturer":"ron@dupont.com" , "agriOrg":"tom@doa.com", "content":[{"contentNo":"1","name":"Nitrogen","percentage":"50"},{"contentNo":"1","name":"Cu","percentage":"40"}],"mrp":700},
+        {"type":"Product" , "id":"harry@rallies.com001", "productName":"Uria", "productType":"Fertilizer" , "approved":true, "rating":"10", "manufacturer":"harry@rallies.com" , "agriOrg":"tom@doa.com", "content":[{"contentNo":"1","name":"Nitrogen","percentage":"50"},{"contentNo":"1","name":"Cu","percentage":"40"}],"mrp":500}
+        
+    ],
+    "orders":
+    [
+        {"type":"Order", "id":"001", "manufacturer":"hermione@nai.com", "retailer":"salazar@slytherin.com", "financeCo":"bogrod@gringotts.com","items":[{"productId":"hermione@nai.com001","quantity":40},{"productId":"hermione@nai.com002","quantity":50}]},
+        {"type":"Order", "id":"002", "manufacturer":"hermione@nai.com", "retailer":"rowena@ravenclaw.com", "financeCo":"bogrod@gringotts.com","items":[{"productId":"hermione@nai.com002","quantity":40}]},
+        {"type":"Order", "id":"003", "manufacturer":"ron@dupont.com", "retailer":"albus@phoenix.com", "financeCo":"bogrod@gringotts.com","items":[{"productId":"ron@dupont.com001","quantity":60}]},
+        {"type":"Order", "id":"004", "manufacturer":"ron@dupont.com", "retailer":"albus@phoenix.com", "financeCo":"bogrod@gringotts.com","items":[{"productId":"ron@dupont.com001","quantity":45}]},
+        {"type":"Order", "id":"005", "manufacturer":"harry@rallies.com", "retailer":"albus@phoenix.com", "financeCo":"bogrod@gringotts.com","items":[{"productId":"harry@rallies.com001","quantity":40}]},
+        {"type":"Order", "id":"006", "manufacturer":"harry@rallies.com", "retailer":"salazar@slytherin.com", "financeCo":"bogrod@gringotts.com","items":[{"productId":"harry@rallies.com001","quantity":40}]}
+    ]
+}

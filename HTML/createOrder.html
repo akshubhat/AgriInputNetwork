@@ -1,0 +1,47 @@
+<div class="acc_header off" id="orderForm">
+    <h3 id="title"></h3>
+    <h4>
+        <span id="selectManufacturer">Select Manufacturer : </span>
+        <select id="manufacturer"></select>
+    </h4>
+    <h4>
+        <span id="selectFinanceCo">Select FinanceCo : </span>
+        <select id="financeCo"></select>
+    </h4>
+    <table width="100%">
+        <tr>
+            <th>OrderId</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Total</th>
+        </tr>
+        <tr>
+            <td id="orderNo" align="center"></td>
+            <td id="status" align="center"></td>
+            <td id="today" align="center"></td>
+            <td id="amount" align="right" width="15%"></td>
+            </td>
+    </table>
+    <table width="100%" id="itemTable">
+        <tr>
+            <td width="14%" id="cn_selectItem"></td>
+            <td width="40%">
+                <select id="items"></select>
+            </td>
+            <td width="16%" id="price"></td>
+            <td width="15%">
+                <button class="showfocus wide" id="addItem">Add Item</button>
+            </td>
+            <td width="15%">
+                <button class="showfocus wide" id="itemDetail">Details</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="acc_body off" id="productDetail">
+    
+</div>
+<div>
+    <button class- "wide" id="cancelNewOrder">Cancel</button>
+    <button class- "wide" id="submitNewOrder">Submit</button>
+</div>

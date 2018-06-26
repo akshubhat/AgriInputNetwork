@@ -1,0 +1,272 @@
+/**
+ * Access control rules for mynetwork
+ */
+
+// rule Default {
+//     description: "Allow all participants access to all resources"
+//     participant: "ANY"
+//     operation: ALL
+//     resource: "org.acme.agriinputnetwork.*"
+//     action: ALLOW
+// }
+
+
+// rule SystemACL {
+//   description:  "System ACL to permit all access"
+//   participant: "ANY"
+//   operation: ALL
+//   resource: "org.hyperledger.composer.system.**"
+//   action: ALLOW
+// }
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+rule ManufacturerACLCreateProduct {
+  description: "Enables Manufacturer to create a product"
+  participant(p):"org.acme.agriinputnetwork.Manufacturer"
+  operation: CREATE, UPDATE, READ
+  resource(r): "org.acme.agriinputnetwork.CreateProduct"
+  // transaction(tx): "org.acme.agriinputnetwork.CreateProduct"
+  condition: (r.manufacturer.getIdentifier() === p.getIdentifier())
+  action: ALLOW
+}
+
+rule ManufacturerACLRequestApproval {
+  description: "Enables Manu. to request for approval of product"
+  participant(p): "org.acme.agriinputnetwork.Manufacturer"
+  operation: CREATE, UPDATE, READ
+  resource(r): "org.acme.agriinputnetwork.RequestApproval"
+  //transaction(tx): "org.acme.agriinputnetwork.RequestApproval"
+  condition: (r.manufacturer.getIdentifier() === p.getIdentifier())
+  action: ALLOW
+}
+
+rule ManufacturerACLManufactureProduct {
+  description: "Enables manu. to manufacturer products"
+  participant(p): "org.acme.agriinputnetwork.Manufacturer"
+  operation: CREATE,UPDATE, READ
+  resource(r): "org.acme.agriinputnetwork.ManufactureProduct"
+  //transaction(tx): "org.acme.agriinputnetwork.ManufactureProduct"
+  condition: (p.getIdentifier() === r.manufacturer.getIdentifier())
+  action: ALLOW
+}
+
+rule AgriOrganisationACLApproveProduct {
+  description: "Enables agri org to approve product"
+  participant(p): "org.acme.agriinputnetwork.AgricultureOrganisation"
+  operation: CREATE,UPDATE, READ
+  resource(r): "org.acme.agriinputnetwork.ApproveProduct"
+  //transaction(tx): "org.acme.agriinputnetwork.ApproveProduct"
+  condition: (p.getIdentifier() === r.agriOrganisation.agriOrganisationId)
+  action: ALLOW
+}
+
+rule AgriOrganisationACLRejectProduct {
+  description: "Enables agri org to reject a product"
+  participant(p): "org.acme.agriinputnetwork.AgricultureOrganisation"
+  operation: CREATE,UPDATE,READ
+  resource(r): "org.acme.agriinputnetwork.RejectProduct"
+  //transaction(tx): "org.acme.agriinputnetwork.RejectProduct"
+  condition: (p.getIdentifier() === r.agriOrganisation.agriOrganisationId)
+  action: ALLOW
+}
+
+rule ManufacturerACL {
+  description: "Enables manufacturer to full access of their product"
+  participant(p): "org.acme.agriinputnetwork.Manufacturer"
+  operation: READ, CREATE, UPDATE, DELETE
+  resource(r): "org.acme.agriinputnetwork.Product"
+  condition: (p.getIdentifier() === r.manufacturer.getIdentifier())
+  action: ALLOW
+}
+
+rule netAccessManufacturer {
+  description: "Enables manu to access the network"
+  participant: "org.acme.agriinputnetwork.Manufacturer"
+  operation: READ, CREATE, UPDATE, DELETE
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+rule AgriOrganisationACL {
+  description: "Enables agriOrg to full access of their product"
+  participant(p): "org.acme.agriinputnetwork.AgricultureOrganisation"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.Product"
+  condition: (p.getIdentifier() === r.agriOrganisation.agriOrganisationId)
+  action: ALLOW
+}
+
+rule netAccessAgriOrganisation {
+  description: "Enables agriOrg to access the network"
+  participant: "org.acme.agriinputnetwork.AgricultureOrganisation"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+
+
+rule RetailerACLCreateOrder {
+  description: "give access to retailer for creating order"
+  participant(p): "org.acme.agriinputnetwork.Retailer"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.CreateOrder"
+  condition: (p.getIdentifier() === r.retailer.getIdentifier())
+  action: ALLOW
+}
+
+
+rule RetailerACLPlaceOrder {
+  description: "provide access to retailer for placing the order"
+  participant(p): "org.acme.agriinputnetwork.Retailer"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.PlaceOrder"
+  condition: (p.getIdentifier() === r.retailer.getIdentifier())
+  action: ALLOW
+}
+
+rule RetailerACLCancelOrder {
+  description: "provide access to retailer for cancel the order"
+  participant(p): "org.acme.agriinputnetwork.Retailer"
+  operation: CREATE,UPDATE,READ
+  resource(r): "org.acme.agriinputnetwork.CancelOrder"
+  condition: (p.getIdentifier() === r.retailer.getIdentifier())
+  action: ALLOW
+}
+
+rule ManufacturerACLAcceptOrder {
+  description: "Provide Access to manufacturer for accept the order"
+  participant(p): "org.acme.agriinputnetwork.Manufacturer"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.AcceptOrder"
+  condition: (p.getIdentifier() === r.manufacturer.getIdentifier())
+  action: ALLOW
+}
+
+rule ManufacturerACLDelivering {
+  description: "Enables Manufacturer to change delivery status"
+  participant(p): "org.acme.agriinputnetwork.Manufacturer"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.Delivering"
+  condition: (p.getIdentifier() === r.manufacturer.getIdentifier())
+  action: ALLOW
+}
+
+rule ManufacturerACLDeliver {
+  description: "Enables Manufacturer to deliver product"
+  participant(p): "org.acme.agriinputnetwork.Manufacturer"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.Deliver"
+  condition: (p.getIdentifier() === r.manufacturer.getIdentifier())
+  action: ALLOW
+}
+
+rule RetailerACLDispure {
+  description: "Enables retailer to raise a dispute"
+  participant(p): "org.acme.agriinputnetwork.Retailer"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.Dispute"
+  condition: (p.getIdentifier() === r.retailer.getIdentifier())
+  action: ALLOW
+}
+
+rule ManufacturerACLResolve {
+  description: "Enables Manufacturer to resolve dispute"
+  participant(p): "org.acme.agriinputnetwork.Manufacturer"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.Resolve"
+  condition: (p.getIdentifier() === r.manufacturer.getIdentifier())
+  action: ALLOW
+}
+
+rule ManufacturerACLRequestPayment {
+  description: "Enables Manufacturer to request for payment"
+  participant(p): "org.acme.agriinputnetwork.Manufacturer"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.RequestPayment"
+  condition: (p.getIdentifier() === r.manufacturer.getIdentifier())
+  action: ALLOW
+}
+
+rule RetailerACLAuthorizePayment {
+  description: "Enables Retailer to authorise a payment"
+  participant(p): "org.acme.agriinputnetwork.Retailer"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.AuthorizePayment"
+  condition: (p.getIdentifier() === r.retailer.getIdentifier())
+  action: ALLOW
+}
+
+rule rinanceCoACLPay {
+  description: "Enables finance co to pay the manufacturer"
+  participant(p): "org.acme.agriinputnetwork.FinanceCo"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.Pay"
+  condition: (p.getIdentifier() === r.financeCo.getIdentifier())
+  action: ALLOW
+}
+
+rule retailerACLReadProduct {
+  description: "Enables retailer to view products"
+  participant: "org.acme.agriinputnetwork.Retailer"
+  operation: READ
+  resource: "org.acme.agriinputnetwork.Product"
+  action: ALLOW
+}
+
+rule manufacturerACLReadOrder {
+  description: "Enables retailer to view products"
+  participant(p): "org.acme.agriinputnetwork.Manufacturer"
+  operation: READ ,UPDATE
+  resource(r): "org.acme.agriinputnetwork.Order"
+  condition: (p.getIdentifier() === r.manufacturer.getIdentifier())
+  action: ALLOW
+}
+
+rule retailerACL {
+  description: "Enables Retailer to full access of their product"
+  participant(p): "org.acme.agriinputnetwork.Retailer"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.Order"
+  condition: (p.getIdentifier() === r.retailer.retailerId)
+  action: ALLOW
+}
+
+rule netAccessRetailer {
+  description: "Enables Retailer to access the network"
+  participant: "org.acme.agriinputnetwork.Retailer"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+rule financeCoACL {
+  description: "Enables financeCo to full access of their product"
+  participant(p): "org.acme.agriinputnetwork.FinanceCo"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.Order"
+  condition: (p.getIdentifier() === r.financeCo.financeCoId)
+  action: ALLOW
+}
+
+rule netAccessFinanceCo {
+  description: "Enables financeCo to access the network"
+  participant: "org.acme.agriinputnetwork.FinanceCo"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
