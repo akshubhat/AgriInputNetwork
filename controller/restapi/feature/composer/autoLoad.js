@@ -58,7 +58,7 @@ exports.autoLoad = function(req,res,next){
                             participantRegistry.add(participant)
                             .then(() => {
                                 console.log('['+_idx+'] '+_arr[_idx].companyName+' successfully added');
-                                svc.m_connection.sendUTF('['+_idx+'] '+_arr[_idx].cpmpanyName+' successfully added');
+                                svc.m_connection.sendUTF('['+_idx+'] '+_arr[_idx].companyName+' successfully added');
                             })
                             .then(() => {
                                 console.log('issuing identity for: '+config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id);
