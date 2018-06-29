@@ -23,14 +23,5 @@
         {"type":"Product" , "id":"ron@dupont.com002", "productName":"Uria", "productType":"" , "approved":false, "rating":"0", "manufacturer":"ron@dupont.com" , "agriOrg":"tom@doa.com", "content":[{"contentNo":"1","name":"Nitrogen","percentage":"50"},{"contentNo":"1","name":"Cu","percentage":"40"}],"mrp":700},
         {"type":"Product" , "id":"harry@rallies.com001", "productName":"Uria", "productType":"Fertilizer" , "approved":true, "rating":"10", "manufacturer":"harry@rallies.com" , "agriOrg":"tom@doa.com", "content":[{"contentNo":"1","name":"Nitrogen","percentage":"50"},{"contentNo":"1","name":"Cu","percentage":"40"}],"mrp":500}
         
-    ],
-    "orders":
-    [
-        {"type":"Order", "id":"001", "manufacturer":"hermione@nai.com", "retailer":"salazar@slytherin.com", "financeCo":"bogrod@gringotts.com","items":[{"productId":"hermione@nai.com001","quantity":40},{"productId":"hermione@nai.com002","quantity":50}]},
-        {"type":"Order", "id":"002", "manufacturer":"hermione@nai.com", "retailer":"rowena@ravenclaw.com", "financeCo":"bogrod@gringotts.com","items":[{"productId":"hermione@nai.com002","quantity":40}]},
-        {"type":"Order", "id":"003", "manufacturer":"ron@dupont.com", "retailer":"albus@phoenix.com", "financeCo":"bogrod@gringotts.com","items":[{"productId":"ron@dupont.com001","quantity":60}]},
-        {"type":"Order", "id":"004", "manufacturer":"ron@dupont.com", "retailer":"albus@phoenix.com", "financeCo":"bogrod@gringotts.com","items":[{"productId":"ron@dupont.com001","quantity":45}]},
-        {"type":"Order", "id":"005", "manufacturer":"harry@rallies.com", "retailer":"albus@phoenix.com", "financeCo":"bogrod@gringotts.com","items":[{"productId":"harry@rallies.com001","quantity":40}]},
-        {"type":"Order", "id":"006", "manufacturer":"harry@rallies.com", "retailer":"salazar@slytherin.com", "financeCo":"bogrod@gringotts.com","items":[{"productId":"harry@rallies.com001","quantity":40}]}
     ]
 }
