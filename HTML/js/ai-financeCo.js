@@ -104,9 +104,6 @@ function formatFinanceOrders(_target, _orders) {
                 case orderStatus.Cancelled.code:
                     _date = _arr[_idx].cancelled;
                     break;
-                case orderStatus.Backordered.code:
-                    _date = _arr[_idx].dateBackordered + '<br/>' + _arr[_idx].backorder;
-                    break;
                 case orderStatus.ShipRequest.code:
                     _date = _arr[_idx].requestShipment;
                     break;
