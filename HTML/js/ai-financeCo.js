@@ -104,9 +104,6 @@ function formatFinanceOrders(_target, _orders) {
                 case orderStatus.Cancelled.code:
                     _date = _arr[_idx].cancelled;
                     break;
-                case orderStatus.ShipRequest.code:
-                    _date = _arr[_idx].requestShipment;
-                    break;
                 case orderStatus.Authorize.code:
                     _date = _arr[_idx].approved;
                     _action += '<option value="Pay">Pay</option>';
