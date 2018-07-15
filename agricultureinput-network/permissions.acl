@@ -118,23 +118,11 @@ rule netAccessAgriOrganisation {
   action: ALLOW
 }
 
-
-
 rule RetailerACLCreateOrder {
   description: "give access to retailer for creating order"
   participant(p): "org.acme.agriinputnetwork.Retailer"
   operation: ALL
   resource(r): "org.acme.agriinputnetwork.CreateOrder"
-  condition: (p.getIdentifier() === r.retailer.getIdentifier())
-  action: ALLOW
-}
-
-
-rule RetailerACLPlaceOrder {
-  description: "provide access to retailer for placing the order"
-  participant(p): "org.acme.agriinputnetwork.Retailer"
-  operation: ALL
-  resource(r): "org.acme.agriinputnetwork.PlaceOrder"
   condition: (p.getIdentifier() === r.retailer.getIdentifier())
   action: ALLOW
 }
@@ -153,42 +141,6 @@ rule ManufacturerACLAcceptOrder {
   participant(p): "org.acme.agriinputnetwork.Manufacturer"
   operation: ALL
   resource(r): "org.acme.agriinputnetwork.AcceptOrder"
-  condition: (p.getIdentifier() === r.manufacturer.getIdentifier())
-  action: ALLOW
-}
-
-rule ManufacturerACLDelivering {
-  description: "Enables Manufacturer to change delivery status"
-  participant(p): "org.acme.agriinputnetwork.Manufacturer"
-  operation: ALL
-  resource(r): "org.acme.agriinputnetwork.Delivering"
-  condition: (p.getIdentifier() === r.manufacturer.getIdentifier())
-  action: ALLOW
-}
-
-rule ManufacturerACLDeliver {
-  description: "Enables Manufacturer to deliver product"
-  participant(p): "org.acme.agriinputnetwork.Manufacturer"
-  operation: ALL
-  resource(r): "org.acme.agriinputnetwork.Deliver"
-  condition: (p.getIdentifier() === r.manufacturer.getIdentifier())
-  action: ALLOW
-}
-
-rule RetailerACLDispure {
-  description: "Enables retailer to raise a dispute"
-  participant(p): "org.acme.agriinputnetwork.Retailer"
-  operation: ALL
-  resource(r): "org.acme.agriinputnetwork.Dispute"
-  condition: (p.getIdentifier() === r.retailer.getIdentifier())
-  action: ALLOW
-}
-
-rule ManufacturerACLResolve {
-  description: "Enables Manufacturer to resolve dispute"
-  participant(p): "org.acme.agriinputnetwork.Manufacturer"
-  operation: ALL
-  resource(r): "org.acme.agriinputnetwork.Resolve"
   condition: (p.getIdentifier() === r.manufacturer.getIdentifier())
   action: ALLOW
 }
@@ -237,6 +189,103 @@ rule manufacturerACLReadOrder {
   action: ALLOW
 }
 
+rule CustomerACLCreateOrder {
+  description: "Description of the Conditional ACL rule"
+  participant(p): "org.acme.agriinputnetwork.Customer"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.CreateCustomerorder"
+  condition: (p.getIdentifier() === r.customer.getIdentifier())
+  action: ALLOW
+}
+
+rule RetailerACLAcceptOrder {
+  description: "Description of the Conditional ACL rule"
+  participant(p): "org.acme.agriinputnetwork.Retailer"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.AcceptCustomerorder"
+  condition: (p.getIdentifier() === r.retailer.getIdentifier())
+  action: ALLOW
+}
+
+rule RetailerACLRequestPayment {
+  description: "Description of the Conditional ACL rule"
+  participant(p): "org.acme.agriinputnetwork.Retailer"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.RequestCustomerPayment"
+  condition: (p.getIdentifier() === r.retailer.getIdentifier())
+  action: ALLOW
+}
+
+rule CustomerACLAuthorizePayment {
+  description: "Description of the Conditional ACL rule"
+  participant(p): "org.acme.agriinputnetwork.Customer"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.AuthorizeRetailerPayment"
+  condition: (p.getIdentifier() === r.customer.getIdentifier())
+  action: ALLOW
+}
+
+rule FinanceCoACLPayRetailer {
+  description: "Description of the Conditional ACL rule"
+  participant(p): "org.acme.agriinputnetwork.FinanceCo"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.PayRetailer"
+  condition: (p.getIdentifier() === r.financeCo.getIdentifier())
+  action: ALLOW
+}
+
+rule manufacturerACLUpdateStockroom {
+  description: "Provides access to update stock room"
+  participant: "org.acme.agriinputnetwork.Manufacturer"
+  operation: READ,UPDATE
+  resource: "org.acme.agriinputnetwork.Stockroom"
+  action: ALLOW
+}
+
+rule retailerACLStockroom {
+  description: "Provides access to update stock room"
+  participant(p): "org.acme.agriinputnetwork.Retailer"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.Stockroom"
+  condition: (p.getIdentifier() === r.retailer.getIdentifier())
+  action: ALLOW
+}
+
+rule retailerACLReadCustomerOrder {
+  description: "Provides access to update stock room"
+  participant(p): "org.acme.agriinputnetwork.Retailer"
+  operation: READ,UPDATE
+  resource(r): "org.acme.agriinputnetwork.Customerorder"
+  condition: (p.getIdentifier() === r.retailer.getIdentifier())
+  action: ALLOW
+}
+
+rule financeCoACLReadCustomerOrder {
+  description: "Provides access to update stock room"
+  participant(p): "org.acme.agriinputnetwork.FinanceCo"
+  operation: READ,UPDATE
+  resource(r): "org.acme.agriinputnetwork.Customerorder"
+  condition: (p.getIdentifier() === r.financeCo.getIdentifier())
+  action: ALLOW
+}
+
+rule CustomerACLReadStock {
+  description: "Description of the Conditional ACL rule"
+  participant: "org.acme.agriinputnetwork.Customer"
+  operation: READ
+  resource: "org.acme.agriinputnetwork.Stockroom"
+  action: ALLOW
+}
+
+rule manufacturerACLProduct {
+  description: "Provides access to update stock room"
+  participant(p): "org.acme.agriinputnetwork.Manufacturer"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.Product"
+  condition: (p.getIdentifier() === r.manufacturer.getIdentifier())
+  action: ALLOW
+}
+
 rule retailerACL {
   description: "Enables Retailer to full access of their product"
   participant(p): "org.acme.agriinputnetwork.Retailer"
@@ -249,6 +298,39 @@ rule retailerACL {
 rule netAccessRetailer {
   description: "Enables Retailer to access the network"
   participant: "org.acme.agriinputnetwork.Retailer"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+rule customerACL {
+  description: "Enables Retailer to full access of their product"
+  participant(p): "org.acme.agriinputnetwork.Customer"
+  operation: ALL
+  resource(r): "org.acme.agriinputnetwork.Customerorder"
+  condition: (p.getIdentifier() === r.customer.customerId)
+  action: ALLOW
+}
+
+rule CustomerACLreadOrder {
+  description: "Enables Retailer to access the network"
+  participant: "org.acme.agriinputnetwork.Customer"
+  operation: READ
+  resource: "org.acme.agriinputnetwork.Order"
+  action: ALLOW
+}
+
+rule CustomerACLreadProduct {
+  description: "Enables Retailer to access the network"
+  participant: "org.acme.agriinputnetwork.Customer"
+  operation: READ
+  resource: "org.acme.agriinputnetwork.Product"
+  action: ALLOW
+}
+
+rule netAccessCustomer {
+  description: "Enables Retailer to access the network"
+  participant: "org.acme.agriinputnetwork.Customer"
   operation: ALL
   resource: "org.hyperledger.composer.system.**"
   action: ALLOW

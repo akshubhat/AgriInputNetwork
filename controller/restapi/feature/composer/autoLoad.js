@@ -30,14 +30,15 @@ exports.autoLoad = function(req,res,next){
     let participant;
 
     svc.createMessageSocket();
-
+   
     socketAddr = svc.m_socketAddr;
+    
     let adminConnection = new AdminConnection();
 
     adminConnection.connect(config.composer.adminCard)
     .then(() => {
         businessNetworkConnection = new BusinessNetworkConnection();
-
+        
         return businessNetworkConnection.connect(config.composer.adminCard)
         .then(() => {
             
@@ -64,13 +65,11 @@ exports.autoLoad = function(req,res,next){
                                 console.log('issuing identity for: '+config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id);
                                 return businessNetworkConnection.issueIdentity(config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id, _arr[_idx].id)
                                 .then((result) => {
-                                    console.log('_arr[_idx].id: '+_arr[_idx].id);
                                     console.log('result.userID: '+result.userID);
                                     let _mem = _arr[_idx];
                                     _mem.secret = result.userSecret;
                                     _mem.userID = result.userID;
                                     memberTable.push(_mem);
-                                    // svc.saveMemberTable(memberTable);
                                     let _meta = {};
                                     for (each in config.composer.metaData)
                                     {(function(_idx, _obj) {_meta[_idx] = _obj[_idx]; })(each, config.composer.metaData); }
@@ -96,15 +95,10 @@ exports.autoLoad = function(req,res,next){
                 })(each, startupFile.members);
             }
 
-            //for (let each in startupFile.items){(function(_idx, _arr){itemTable.push(_arr[_idx]);})(each, startupFile.items);}
-            //svc.saveItemTable(itemTable);
-            // svc.saveItemTable(itemTable);
             for(let each in startupFile.assets){
                 (function(_idx,_arr){
-                    //console.log(_arr[_idx].id+'   safgdf');
                     return businessNetworkConnection.getAssetRegistry(config.composer.NS+'.'+_arr[_idx].type)
                     .then((assetRegistry) => {
-                        //console.log(_arr[_idx].id+'   safgdf');
                         return assetRegistry.get(_arr[_idx].id)
                         .then((_res) => {
                             console.log('['+_idx+'] asset with id: '+_arr[_idx].id+' already exists in Registry '+config.composer.NS+'.'+_arr[_idx].type);
@@ -113,100 +107,43 @@ exports.autoLoad = function(req,res,next){
                         .catch((error) => {
                             return businessNetworkConnection.getAssetRegistry(config.composer.NS+'.'+'Product')
                             .then((assetRegistry) => {
-                                //console.log(_arr[_idx].id+'   safgdf');
                                 return assetRegistry.getAll()
                                 .then(function(allProduct){
                                     let asset = factory.newResource(config.composer.NS, _arr[_idx].type, _arr[_idx].id);
                                     var createNew;
-                                    //console.log(_arr[_idx].id+'   safgdf');
                                     var id = _arr[_idx].id;
-                                    // if(_arr[_idx].type === 'Order'){
-                                    //     asset = svc.createOrderTemplate(asset);
-                                    //     //let _tmp = svc.addItems(_arr[_idx], itemTable);
-                                    //     //asset.items = _arr[_idx].items;
-                                    //     var i = 0;
-                                    //     var temp = 0;
-                                    //     var prd = asset;
-                                    //     //console.log(_arr[_idx].id+'   safgdf');
-                                    //     console.log(_arr[_idx].items);
-                                    //     while(i !== _arr[_idx].items.length){
-                                    //         prd = allProduct.find(function(x){
-                                    //             //console.log(allProduct + '            s485489');
-                                    //             return x.$identifier === _arr[_idx].items[i].productId;
-                                    //         });
-                                    //         console.log('product :'+ prd);
-                                    //         temp += (prd.mrp * _arr[_idx].items[i].quantity);
-                                    //         i+=1;
-                                    //     }
-                                        
-                                    //     asset.orderId = _arr[_idx].id;
-                                    //     asset.retailer = factory.newRelationship(config.composer.NS, 'Retailer', _arr[_idx].retailer);
-                                    //     asset.manufacturer = factory.newRelationship(config.composer.NS, 'Manufacturer', _arr[_idx].manufacturer);
-                                    //     asset.financeCo = factory.newRelationship(config.composer.NS, 'FinanceCo', _arr[_idx].financeCo);
-
-                                    //     // then the buy transaction is created
-                                        
-                                    //     createNew = factory.newTransaction(config.composer.NS, 'CreateOrder');
-                                    //     createNew.financeCo = factory.newRelationship(config.composer.NS, 'FinanceCo', _arr[_idx].financeCo);
-                                    //     createNew.order = factory.newRelationship(config.composer.NS, 'Order', asset.$identifier);
-                                    //     createNew.retailer = factory.newRelationship(config.composer.NS, 'Retailer', _arr[_idx].retailer);
-                                    //     createNew.manufacturer = factory.newRelationship(config.composer.NS, 'Manufacturer', _arr[_idx].manufacturer);
-                                    //     createNew.items = [];
-                                        
-                                    //     for(var i = 0; i< _arr[_idx].items.length; i++){
-                                    //         createNew.items.push(JSON.stringify(_arr[_idx].items[i]));
-                                    //     }
-                                    //     createNew.amount = temp;
-                                    // }
-                                    // else{
-                                        asset = svc.createProductTemplate(asset);
-                                        asset.productId = _arr[_idx].id;
-                                        
-                                        asset.manufacturer = factory.newRelationship(config.composer.NS, 'Manufacturer', _arr[_idx].manufacturer);
-                                        //asset.financeCo = factory.newRelationship(config.composer.NS, 'FinanceCo', financeCoID);
-                                        asset.agriOrganisation = factory.newRelationship(config.composer.NS,'AgricultureOrganisation',_arr[_idx].agriOrg);
-                                        
-                                        // then the buy transaction is created
-                                        createNew = factory.newTransaction(config.composer.NS, 'CreateProduct');
-                                        createNew.productName = _arr[_idx].productName;
-                                        createNew.productType = _arr[_idx].productType;
-                                        createNew.mrp = _arr[_idx].mrp;
-                                        createNew.bestBefore = '1 Month';
-                                        createNew.product = factory.newRelationship(config.composer.NS, 'Product', asset.$identifier);
-                                        createNew.manufacturer = factory.newRelationship(config.composer.NS, 'Manufacturer', _arr[_idx].manufacturer);
-                                        createNew.agriOrganisation = factory.newRelationship(config.composer.NS,'AgricultureOrganisation',_arr[_idx].agriOrg);
-                                        createNew.content = [];
-                                        for(var i = 0; i< _arr[_idx].content.length; i++){
-                                            createNew.content.push(JSON.stringify(_arr[_idx].content[i]));
-                                        }
-                                        console.log('added 945484656'+asset);
-                                    // }
+                                    asset = svc.createProductTemplate(asset);
+                                    asset.productId = _arr[_idx].id;
+                                    
+                                    asset.manufacturer = factory.newRelationship(config.composer.NS, 'Manufacturer', _arr[_idx].manufacturer);
+                                    asset.agriOrganisation = factory.newRelationship(config.composer.NS,'AgricultureOrganisation',_arr[_idx].agriOrg);
+                                    createNew = factory.newTransaction(config.composer.NS, 'CreateProduct');
+                                    createNew.productName = _arr[_idx].productName;
+                                    createNew.productType = _arr[_idx].productType;
+                                    createNew.mrp = _arr[_idx].mrp;
+                                    createNew.bestBefore = '1 Month';
+                                    createNew.product = factory.newRelationship(config.composer.NS, 'Product', asset.$identifier);
+                                    createNew.manufacturer = factory.newRelationship(config.composer.NS, 'Manufacturer', _arr[_idx].manufacturer);
+                                    createNew.agriOrganisation = factory.newRelationship(config.composer.NS,'AgricultureOrganisation',_arr[_idx].agriOrg);
+                                    createNew.content = [];
+                                    for(var i = 0; i< _arr[_idx].content.length; i++){
+                                        createNew.content.push(JSON.stringify(_arr[_idx].content[i]));
+                                    }
                                     return assetRegistry.add(asset)
                                     .then(() => {
-                                        console.log('added 945484656 asset : '+asset);
+                                        console.log(svc.m_connection);
                                         svc.loadTransaction(svc.m_connection, createNew, id, businessNetworkConnection);
                                     })
                                     .catch((error) => {
-                                        // in the development environment, because of how timing is set up, it is normal to
-                                        // encounter the MVCC_READ_CONFLICT error. This is a database timing error, not a
-                                        // logical transaction error.
                                         if (error.message.search('MVCC_READ_CONFLICT') !== -1)
                                         {
                                             console.log('AL: '+_arr[_idx].id+' retrying assetRegistry.add for: '+_arr[_idx].id);
-                                            // if(_arr[_idx].type === 'Order'){
-                                            //     svc.addOrder(svc.m_connection, asset, assetRegistry, createNew, businessNetworkConnection);
-                                            // }
-                                            // else{
-                                                svc.addProduct(svc.m_connection, asset, assetRegistry, createNew, businessNetworkConnection);
-                                            // }
+                                            svc.addProduct(svc.m_connection, asset, assetRegistry, createNew, businessNetworkConnection);
                                         }
                                         else {console.log('error with assetRegistry.add', error.message);}
                                     });
                                 })
                             })
-                            
-                            
-
                         });
                     })
                     .catch((error) => {
@@ -214,135 +151,42 @@ exports.autoLoad = function(req,res,next){
                     });
                 })(each, startupFile.assets);
             }
-
-
-            for(let each in startupFile.orders){
+            for(let each in startupFile.stockrooms){
                 (function(_idx,_arr){
-                    //console.log(_arr[_idx].id+'   safgdf');
                     return businessNetworkConnection.getAssetRegistry(config.composer.NS+'.'+_arr[_idx].type)
                     .then((assetRegistry) => {
-                        //console.log(_arr[_idx].id+'   safgdf');
                         return assetRegistry.get(_arr[_idx].id)
                         .then((_res) => {
                             console.log('['+_idx+'] asset with id: '+_arr[_idx].id+' already exists in Registry '+config.composer.NS+'.'+_arr[_idx].type);
                             svc.m_connection.sendUTF('['+_idx+'] asset with id: '+_arr[_idx].id+' already exists in Registry '+config.composer.NS+'.'+_arr[_idx].type);
                         })
                         .catch((error) => {
-                            return businessNetworkConnection.getAssetRegistry(config.composer.NS+'.'+'Product')
+                            let asset = factory.newResource(config.composer.NS, _arr[_idx].type, _arr[_idx].id);
+                            asset = svc.createStockroomTemplate(asset);
+                            asset.stockroomId = _arr[_idx].id;
+                            asset.retailer = factory.newRelationship(config.composer.NS, 'Retailer', _arr[_idx].retailer);
+                            return businessNetworkConnection.getAssetRegistry(config.composer.NS+'.'+_arr[_idx].type)
                             .then((assetRegistry) => {
-                                //console.log(_arr[_idx].id+'   safgdf');
-                                return assetRegistry.getAll()
-                                .then(function(allProduct){
-                                    let asset = factory.newResource(config.composer.NS, _arr[_idx].type, _arr[_idx].id);
-                                    var createNew;
-                                    //console.log(_arr[_idx].id+'   safgdf');
-                                    var id = _arr[_idx].id;
-                                    //if(_arr[_idx].type === 'Order'){
-                                        asset = svc.createOrderTemplate(asset);
-                                        //let _tmp = svc.addItems(_arr[_idx], itemTable);
-                                        //asset.items = _arr[_idx].items;
-                                        var i = 0;
-                                        var temp = 0;
-                                        var prd = asset;
-                                        //console.log(_arr[_idx].id+'   safgdf');
-                                        console.log(_arr[_idx].items);
-                                        
-                                        
-                                        asset.orderId = _arr[_idx].id;
-                                        asset.retailer = factory.newRelationship(config.composer.NS, 'Retailer', _arr[_idx].retailer);
-                                        asset.manufacturer = factory.newRelationship(config.composer.NS, 'Manufacturer', _arr[_idx].manufacturer);
-                                        asset.financeCo = factory.newRelationship(config.composer.NS, 'FinanceCo', _arr[_idx].financeCo);
-
-                                        // then the buy transaction is created
-                                        
-                                        createNew = factory.newTransaction(config.composer.NS, 'CreateOrder');
-                                        createNew.financeCo = factory.newRelationship(config.composer.NS, 'FinanceCo', _arr[_idx].financeCo);
-                                        createNew.order = factory.newRelationship(config.composer.NS, 'Order', asset.$identifier);
-                                        createNew.retailer = factory.newRelationship(config.composer.NS, 'Retailer', _arr[_idx].retailer);
-                                        createNew.manufacturer = factory.newRelationship(config.composer.NS, 'Manufacturer', _arr[_idx].manufacturer);
-                                        createNew.items = [];
-                                        
-                                        // for(var i = 0; i< _arr[_idx].items.length; i++){
-                                        //     createNew.items.push(JSON.stringify(_arr[_idx].items[i]));
-                                        // }
-                                        while(i !== _arr[_idx].items.length){
-                                            prd = allProduct.find(function(x){
-                                                //console.log(allProduct + '            s485489');
-                                                return x.$identifier === (_arr[_idx].items[i]).productId;
-                                            });
-                                            let tmp = (prd.mrp * _arr[_idx].items[i].quantity);
-                                            let _itm = JSON.parse('{"productId":"'+prd.productId+'","quantity":'+_arr[_idx].items[i].quantity+',"productName":"'+prd.productName+'","extendedPrice":'+tmp+'}');
-                                            //console.log('product :'+ prd);
-                                            temp += tmp;
-                                            if(typeof(prd) !== undefined){
-                                                createNew.items.push(JSON.stringify(_itm));
-                                            }
-                                            _itm = '';
-                                            i+=1;
-                                        }
-                                        createNew.amount = temp;
-                                    // }
-                                    // else{
-                                    //     asset = svc.createProductTemplate(asset);
-                                    //     asset.productId = _arr[_idx].id;
-                                        
-                                    //     asset.manufacturer = factory.newRelationship(config.composer.NS, 'Manufacturer', _arr[_idx].manufacturer);
-                                    //     //asset.financeCo = factory.newRelationship(config.composer.NS, 'FinanceCo', financeCoID);
-                                    //     asset.agriOrganisation = factory.newRelationship(config.composer.NS,'AgricultureOrganisation',_arr[_idx].agriOrg);
-                                        
-                                    //     // then the buy transaction is created
-                                    //     createNew = factory.newTransaction(config.composer.NS, 'CreateProduct');
-                                    //     createNew.productName = _arr[_idx].productName;
-                                    //     createNew.productType = _arr[_idx].productType;
-                                    //     createNew.mrp = _arr[_idx].mrp;
-                                    //     createNew.bestBefore = '1 Month';
-                                    //     createNew.product = factory.newRelationship(config.composer.NS, 'Product', asset.$identifier);
-                                    //     createNew.manufacturer = factory.newRelationship(config.composer.NS, 'Manufacturer', _arr[_idx].manufacturer);
-                                    //     createNew.agriOrganisation = factory.newRelationship(config.composer.NS,'AgricultureOrganisation',_arr[_idx].agriOrg);
-                                    //     createNew.content = [];
-                                    //     for(var i = 0; i< _arr[_idx].content.length; i++){
-                                    //         createNew.content.push(JSON.stringify(_arr[_idx].content[i]));
-                                    //     }
-                                    //     console.log('added 945484656'+asset);
-                                    // }
-                                    return businessNetworkConnection.getAssetRegistry(config.composer.NS+'.'+'Order')
-                                    .then((assetRegistry) => {
-                                        return assetRegistry.add(asset)
-                                        .then(() => {
-                                            console.log('added 945484656 asset : '+asset);
-                                            svc.loadTransaction(svc.m_connection, createNew, id, businessNetworkConnection);
-                                        })
-                                        .catch((error) => {
-                                            // in the development environment, because of how timing is set up, it is normal to
-                                            // encounter the MVCC_READ_CONFLICT error. This is a database timing error, not a
-                                            // logical transaction error.
-                                            if (error.message.search('MVCC_READ_CONFLICT') !== -1)
-                                            {
-                                                console.log('AL: '+_arr[_idx].id+' retrying assetRegistry.add for: '+_arr[_idx].id);
-                                                // if(_arr[_idx].type === 'Order'){
-                                                    svc.addOrder(svc.m_connection, asset, assetRegistry, createNew, businessNetworkConnection);
-                                                // }
-                                                // else{
-                                                //    svc.addProduct(svc.m_connection, asset, assetRegistry, createNew, businessNetworkConnection);
-                                                // }
-                                            }
-                                            else {console.log('error with assetRegistry.add', error.message);}
-                                        });
-                                    })
+                                return assetRegistry.add(asset)
+                                .then(() => {
+                                    console.log(svc.m_connection);
                                 })
+                                .catch((error) => {
+                                    if (error.message.search('MVCC_READ_CONFLICT') !== -1)
+                                    {
+                                        console.log('AL: '+_arr[_idx].id+' retrying assetRegistry.add for: '+_arr[_idx].id);
+                                        svc.addStockroom(svc.m_connection, asset, assetRegistry, businessNetworkConnection);
+                                    }
+                                    else {console.log('error with assetRegistry.add', error.message);}
+                                });
                             })
-                            
-                            
-
-                        });
+                        })
                     })
                     .catch((error) => {
                         console.log('error with all getParticipantRegistry', error.message);
                     });
-                })(each, startupFile.orders);
+                })(each, startupFile.stockrooms);
             }
-
-            
         })
         .catch((error) => {
             console.log('error with business network Connect', error.message);

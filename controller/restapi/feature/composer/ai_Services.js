@@ -24,21 +24,38 @@ createOrderTemplate: function (_inbound)
         _inbound.created = new Date().toISOString();
         _inbound.cancelled = '';
         _inbound.accepted = '';
-        _inbound.ordered = '';
-        _inbound.delivered = '';
-        _inbound.delivering = '';
-        _inbound.disputeOpened = '';
-        _inbound.disputeResolved = '';
-        _inbound.orderRefunded = '';
         _inbound.paymentRequested = '';
         _inbound.paid = '';
         _inbound.approved = '';
-        _inbound.dispute = '';
-        _inbound.resolve = '';
-        _inbound.refund = '';
         _inbound.manufacturer = '';
         _inbound.retailer = '';
         _inbound.financeCo = '';
+        return(_inbound);
+    },
+
+    createCustomerOrderTemplate: function (_inbound)
+    {
+        _inbound.customerOrderId = '';
+        _inbound.amount = 0;
+        _inbound.items = [];
+        _inbound.status = JSON.stringify(this.orderStatus.Created);
+        _inbound.created = new Date().toISOString();
+        _inbound.cancelled = '';
+        _inbound.accepted = '';
+        _inbound.paymentRequested = '';
+        _inbound.paid = '';
+        _inbound.approved = '';
+        _inbound.customer = '';
+        _inbound.retailer = '';
+        _inbound.financeCo = '';
+        return(_inbound);
+    },
+
+createStockroomTemplate: function (_inbound)
+    {
+        _inbound.stockroomId = '';
+        _inbound.stock = [];
+        _inbound.retailer = '';
         return(_inbound);
     },
 
@@ -50,8 +67,8 @@ createProductTemplate: function(_inbound)
         _inbound.approved =false;
         _inbound.rating ='';
         _inbound.mrp = 0;
-        _inbound.subsidy = 0;
         _inbound.batches = [];
+        _inbound.archive = [];
         _inbound.content = [];
         _inbound.status = JSON.stringify(this.productStatus.ProductCreated);
         _inbound.requestApproval = '';
@@ -68,11 +85,11 @@ createProductTemplate: function(_inbound)
 
 loadTransaction: function (_con, _item, _id, businessNetworkConnection)
 {
-    console.log('CREATING PRODUCT');
+    // console.log('CREATING PRODUCT');
     //console.log(_item);
     return businessNetworkConnection.submitTransaction(_item)
     .then(() => {
-        console.log('loadTransaction: '+_id+' successfully added'); 
+        console.log('loadTransaction: '+_id+' successfully added');
         _con.sendUTF('loadTransaction: '+_id+' successfully added');
     })
     .catch((error) => {
@@ -103,8 +120,8 @@ addOrder: function (_con, _order, _registry, _createNew, _bnc)
     },
 
 addProduct: function (_con, _product, _registry, _createNew, _bnc)
-    {   
-        console.log('ADDING');
+    {
+        //console.log('ADDING');
         return _registry.add(_product)
         .then(() => {
             this.loadTransaction(_con,_createNew, _product.productId, _bnc);
@@ -119,27 +136,36 @@ addProduct: function (_con, _product, _registry, _createNew, _bnc)
         });
     },
 
+addStockroom: function (_con, _stockroom, _registry, _bnc)
+    {
+        return _registry.add(_stockroom)
+        .then(() => {
+            _con.sendUTF('Stockroom : '+_stockroom.stockroomId+' successfully added');
+        })
+        .catch((error) => {
+        if (error.message.search('MVCC_READ_CONFLICT') != -1)
+            {
+                console.log(_stockroom.stockroomId+" addAsset retrying assetRegistry.add for: "+_stockroom.stockroomId);
+                this.addStockroom(_con,_stockroom, _registry, _bnc);
+            }
+            else {console.log('error with assetRegistry.add', error)}
+        });
+    },
+
 productStatus: {
         ProductCreated: {code: 1,text: 'Product Created'},
         RequestApproval: {code: 2,text: 'Product Approval Requested'},
         ApproveProduct: {code: 3,text: 'Product Approved'},
         RejectProduct: {code: 4, text: 'Product Rejected'}
     },
-    
+
 orderStatus: {
-        Created: {code: 1, text: 'Order Created'},
-        Bought: {code: 2, text: 'Order Purchased'},
-        Cancelled: {code: 3, text: 'Order Cancelled'},
-        Ordered: {code: 4, text: 'Order Placed'},
-        Delivered: {code: 6, text: 'Order Delivered'},
-        Delivering: {code: 15, text: 'Order being Delivered'},
-        Dispute: {code: 8, text: 'Order Disputed'},
-        Resolve: {code: 9, text: 'Order Dispute Resolved'},
-        PayRequest: {code: 10, text: 'Payment Requested'},
-        Authorize: {code: 11, text: 'Payment Approved'},
-        Paid: {code: 14, text: 'Payment Processed'},
-        Refund: {code: 12, text: 'Order Refund Requested'},
-        Refunded: {code: 13, text: 'Order Refunded'}
+    Created: {code: 1, text: 'Order Created'},
+    Cancelled: {code: 2, text: 'Order Cancelled'},
+    Accepted: {code: 3, text: 'Order Placed'},
+    PayRequest: {code: 4, text: 'Payment Requested'},
+    Authorize: {code: 5, text: 'Payment Approved'},
+    Paid: {code: 6, text: 'Payment Processed'}
     },
 
 
@@ -153,10 +179,11 @@ createMessageSocket: function (_port)
     {
         this.m_socketAddr = port;
         this.m_socket= new ws.server({httpServer: http.createServer().listen(this.m_socketAddr)});
-        var _this = this;            
-        this.m_socket.on('request', function(request) 
+        var _this = this;
+        _this.m_socket.on('request', function(request)
         {
             _this.m_connection = request.accept(null, request.origin);
+            // console.log("Its' port : "+port + "\nm_socket:"+_this.m_socket+" \nm_socketAddr: "+_this.m_socketAddr + " \nm_connection: "+_this.m_connection + ' \nrequest.origine: ' + request.origin);
             _this.m_connection.on('message', function(message)
             {
                 console.log(message.utf8Data);
@@ -182,8 +209,8 @@ createChainSocket: function ()
     {
         this.cs_socketAddr = port;
         this.cs_socket= new ws.server({httpServer: http.createServer().listen(this.cs_socketAddr)});
-        var _this = this;            
-        this.cs_socket.on('request', function(request) 
+        var _this = this;
+        this.cs_socket.on('request', function(request)
         {
             _this.cs_connection = request.accept(null, request.origin);
             _this.cs_connection.on('message', function(message)

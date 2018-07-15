@@ -268,7 +268,6 @@ exports.getAssetRegistries = function(req, res, next)
                     { (function (_idx, _arr)
                         {
                         let r_type = _arr[_idx].name.split('.');
-                        //console.log('asd'+r_type);
                         allRegistries.push([r_type[r_type.length-1]]);
                     })(each, assetRegistries);
                 }
@@ -301,7 +300,6 @@ exports.getMembers = function(req, res, next) {
                             { let _jsn = {};
                             _jsn.type = req.body.registry;
                             _jsn.companyName = _arr[_idx].companyName;
-                            console.log(_jsn.companyName);
                             _jsn.id = _arr[_idx].$identifier;
                             allMembers.push(_jsn); })(each, members);
                     }
@@ -432,6 +430,9 @@ exports.getAssets = function(req, res, next) {
                                             case 'Product':
                                                 _jsn.id = _arr[_idx].productId;
                                                 break;
+                                            case 'Stockroom':
+                                                _jsn.id = _arr[_idx].stockroomId;
+                                                break;
                                             default:
                                                 _jsn.id = _arr[_idx].id;
                                             }
@@ -448,6 +449,9 @@ exports.getAssets = function(req, res, next) {
                                             break;
                                         case 'Product':
                                             _jsn.id = _arr[_idx].productId;
+                                            break;
+                                        case 'Stockroom':
+                                            _jsn.id = _arr[_idx].stockroomId;
                                             break;
                                         default:
                                             _jsn.id = _arr[_idx].id;

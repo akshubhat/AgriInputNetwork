@@ -6,12 +6,12 @@ let msgPort = null;
 let _blctr = 0;
 
 function loadAdminUX(){
-    
+
     let toLoad = 'admin.html';
-    
+
     $.when($.get(toLoad)).done(function (page){
         $('#body').empty();
-        
+
         $('#body').append(page);
         //console.log('Admin clicked');
         //updatePage('admin');
@@ -23,7 +23,7 @@ function loadAdminUX(){
 function wsDisplay(_target, _port)
 {
     let content = $('#'+_target);
-    let wsSocket = new WebSocket('ws://ec2-18-207-206-152.compute-1.amazonaws.com:'+_port);
+    let wsSocket = new WebSocket('ws://localhost:'+_port);
     wsSocket.onopen = function () {wsSocket.send('connected to client');};
     wsSocket.onmessage = function (message) {content.append(formatMessage(message.data));};
     wsSocket.onerror = function (error) {console.log('WebSocket error on wsSocket: ' + error);};
@@ -34,7 +34,7 @@ function networkDeploy()
 {
     let options = {};
     options.myArchive = networkFile;
-    $.when($.post('/composer/admin/deploy', options)).done(function (_results){ 
+    $.when($.post('/composer/admin/deploy', options)).done(function (_results){
         let _str = '';
         _str +='<h2>network deploy request for '+networkFile+'</h2>';
         _str += '<h4>Network deploy results: '+_results.deploy+'</h4>';
@@ -76,7 +76,7 @@ function networkStart()
 function adminList()
 {
     let _url = '/composer/admin/listAsAdmin';
-    $.when($.get(_url)).done(function (_connection){ 
+    $.when($.get(_url)).done(function (_connection){
         let _str = '<h3>Current Active Business Networks</h3><ul>';
         for (let each in _connection)
         {
@@ -93,7 +93,7 @@ function adminList()
 // ping a network, check for compatibility
 function ping()
 {
-   let options = {}; 
+   let options = {};
    options.businessNetwork = businessNetwork;
    $.when($.post('/composer/admin/ping', options)).done(function (_results){
        let _str = '';
@@ -334,7 +334,7 @@ function createCard()
         let _submit = $('#submit');
         _cancel.on('click', function (){$('#admin-forms').empty();});
         _submit.on('click', function(){
-            options.secret = $('#secret').val();            
+            options.secret = $('#secret').val();
             options.id = $('#member_list').find(':selected').text();
             console.log(options);
             $('#messages').append(formatMessage('starting member card creation request.'));
@@ -360,7 +360,7 @@ function listAssets()
     //console.log(_str + 'sadsfdsf');
     $.when($.post('/composer/admin/getAssets', options)).done(function (_results)
     {
-        
+
         _str +='<h2>Registry List</h2>';
         _str += '<h4>Network update results: '+_results.result+'</h4>';
         if (_results.result === 'success')
@@ -376,15 +376,25 @@ function listAssets()
                 _str += '<br><br/>';
             }
             else{
-                _str += '<table width="100%"><tr><th>ProductID</th><th>Product Name</th><th>Manufacturer</th></tr>';
-                for (let each in _results.orders)
-                {(function(_idx, _arr){
-                    _str += '<tr><td align="center">'+_arr[_idx].productId+'</td><td>'+_arr[_idx].productName+'</td><td>'+_arr[_idx].manufacturer+'</td></tr>';
-                })(each, _results.orders);}
-                _str += '</ul>';
+                if($('#assetName').find(':selected').text() === 'Product'){
+                    _str += '<table width="100%"><tr><th>ProductID</th><th>Product Name</th><th>Manufacturer</th></tr>';
+                    for (let each in _results.orders)
+                    {(function(_idx, _arr){
+                        _str += '<tr><td align="center">'+_arr[_idx].productId+'</td><td>'+_arr[_idx].productName+'</td><td>'+_arr[_idx].manufacturer+'</td></tr>';
+                    })(each, _results.orders);}
+                    _str += '</ul>';
+                }
+                else{
+                    _str += '<table width="100%"><tr><th>StockroomID</th><th>Retailer Name</th></tr>';
+                    for (let each in _results.orders)
+                    {(function(_idx, _arr){
+                        _str += '<tr><td align="center">'+_arr[_idx].stockroomId+'</td><td>'+_arr[_idx].retailer+'</td></tr>';
+                    })(each, _results.orders);}
+                    _str += '</ul>';
+                }
             }
 
-        } 
+        }
         else {
             _str += '<br/>'+_results.error;
         }
@@ -525,7 +535,8 @@ function getHistorian()
     $.when($.get('fabric/getHistory')).done(function(_res)
     { let _str = '<h2> Get History Records: '+_res.result+'</h2>';
         if (_res.result === 'success')
-            {_str += 'Current length: '+formatMessage(_res.history.length);
+            {console.log(_res.history);
+                _str += 'Current length: '+formatMessage(_res.history.length);
             _str += '<table><tr><th>Transaction ID</th><th>Transaction Type</th><th>TimeStamp</th></tr>';
             _res.history.sort(function(a,b){return (b.transactionTimestamp > a.transactionTimestamp) ? -1 : 1;});
             for (let each in _res.history)
@@ -549,7 +560,7 @@ function getChainEvents()
     $.when($.get('fabric/getChainEvents')).done(function(_res)
     { let _str = '<h2> Get Chain events requested. Sending to port: '+_res.port+'</h2>';
         let content = $('#blockchainVisual');
-        let csSocket = new WebSocket('ws://ec2-18-207-206-152.compute-1.amazonaws.com:'+_res.port);
+        let csSocket = new WebSocket('ws://localhost:'+_res.port);
         csSocket.onopen = function () {csSocket.send('connected to client');};
         csSocket.onmessage = function (message) {
             _blctr ++;
@@ -572,4 +583,3 @@ function preLoad() {
         wsDisplay('body',msgPort);
     });
 }
-

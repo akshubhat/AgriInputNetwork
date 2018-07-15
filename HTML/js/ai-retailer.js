@@ -32,7 +32,8 @@ function setupRetailer(page, port) {
 
     let _createOrder = $('#newOrder');
     let _listOrder = $('#orderStatus');
-
+    let _stockrooms = $('#stockroomStatus');
+    let _customerOrderDetails = $('#customerOrderDetails');
     let _orderDiv = $('#' + orderDiv);
 
     _createOrder.on('click', function () {
@@ -41,6 +42,14 @@ function setupRetailer(page, port) {
 
     _listOrder.on('click', function () {
         listOrders();
+    });
+
+    _stockrooms.on('click',function(){
+        listStockroom();
+    });
+
+    _customerOrderDetails.on('click',function(){
+        customerOrderDetails();
     });
 
     $('#retailer').empty();
@@ -100,9 +109,9 @@ function displayOrderForm() {
             $('#price').append(result.products[0].mrp);
             itemTable = result.products;
         });
-        $('#cancelNewOrder').on('click', function () { 
+        $('#cancelNewOrder').on('click', function () {
             totalAmount = 0;
-            _orderDiv.empty(); 
+            _orderDiv.empty();
         });
         $('#submitNewOrder').hide();
         $('#submitNewOrder').on('click', function () {
@@ -113,24 +122,19 @@ function displayOrderForm() {
             option.items = newItems;
             console.log('New Items = '+newItems);
             option.mrp = $('#mrp').val();
-            //console.log(option);
             _orderDiv.empty();
             totalAmount = 0;
             $.when($.post('/composer/client/addOrder', option)).done(function (_res) {
                 _orderDiv.empty();
-                $('#retailer_messages').append(formatMessage(_res.result));
-                //console.log(_res);
+                $('#retailer_messages').prepend(formatMessage(_res.result));
             })
         });
         $('#manufacturer').change(function(){
             let options = {};
             totalAmount = 0;
-            //console.log("Comes here");
-            //$('#itemTable').empty();
             var table = $('#item');
             for( ; len>-1 ; len--){
                 newItems.shift(1);
-                //len--;
             }
             $("#itemTable").find("tr:gt(0)").remove();
             options.manufacturerId = $('#manufacturer').find(':selected').val();
@@ -156,31 +160,28 @@ function displayOrderForm() {
 
         $('#addItem').on('click', function ()
         {
-            len++; 
+            len++;
             accToggle('productDetail', 'product_b', 'product_h');
             let _ptr = $('#items').find(':selected').val();
-            // remove the just selected item so that it cannot be added twice.
-            
-            // build a new item detail row in the display window
             let _item = itemTable.find(x => x.productId ===  _ptr);
             $('#items').find(':selected').remove();
-            //let len = itemTable.length-1;
+
             _str = '<tr><td>'+_item.productId+'</td><td>'+_item.productName+'</td><td><input type="number" id="count'+len+'"</td><td id="price'+len+'"></td></tr>';
             $('#itemTable').append(_str);
-            // set the initial item count to 1
+
             $('#count'+len).val(1);
-            // set the initial price to the price of one item
+
             $('#price'+len).append('$'+_item.mrp+'.00');
-            // add an entry into an array for this newly added item
+
             let _newItem = _item;
             _newItem.extendedPrice = _item.mrp;
             newItems[len] = _newItem;
             newItems[len].quantity=1;
             totalAmount += _newItem.extendedPrice;
-            // update the order amount with this new item
+
             $('#amount').empty();
             $('#amount').append('$'+totalAmount+'.00');
-            // function to update item detail row and total amount if itemm count is changed
+
             $('#count'+len).on('change', function (){
                 let len = this.id.substring(5);
                 let qty = $('#count'+len).val();
@@ -204,6 +205,7 @@ function displayOrderForm() {
             $("#productDetail").append(_tgl);
             accToggle('productDetail', 'product_b', 'product_h');
         });
+
         $('#product_b').on('click', function () {
             accToggle('productDetail', 'product_b', 'product_h');
         });
@@ -229,15 +231,11 @@ function formatProductDetail(_prd){
         })(every, _prd.content);
     }
     _out += '</table></div>';
-
-
     return _out;
-    
 }
 
 function listOrders() {
     let options = {};
-    // get the users email address
     options.id = $('#retailer').find(':selected').text();
 
     options.userID = options.id;
@@ -246,11 +244,10 @@ function listOrders() {
         if ((typeof (_results.orders) === 'undefined') || (_results.orders === null)) {
             console.log('error getting orders: ', _results);
         }
-        else {// if they have no orders, then display a message to that effect
+        else {
             if (_results.orders.length < 1) {
                 $('#orderDiv').empty(); $('#orderDiv').append(formatMessage('no product available' + options.id));
             }
-            // if they have orders, format and display the orders.
             else {
                 formatOrders($('#orderDiv'), _results.orders);
             }
@@ -260,7 +257,7 @@ function listOrders() {
 
 function formatOrders(_target, _orders) {
     _target.empty();
-    let _str = ''; 
+    let _str = '';
     let _date = '';
 
     for (let each in _orders) {
@@ -270,46 +267,22 @@ function formatOrders(_target, _orders) {
             let r_string;
 
             r_string = '</th>';
-            
+
             switch (JSON.parse(_arr[_idx].status).code) {
                 case orderStatus.PayRequest.code:
                     _date = _arr[_idx].paymentRequested;
                     _action += '<option value="AuthorizePayment">Authorize Payment</option>';
-                    _action += '<option value="Dispute">Dispute</option>';
-                    r_string = '<br/>Reason for Dispute<input id="r_reason' + _idx + '" type="text"></input></th>';
                     break;
-                case orderStatus.Delivered.code:
-                    _date = _arr[_idx].delivered;
-                    _action += '<option value="AuthorisePayment">Authorise Payment</option>';
-                    _action += '<option value="Dispute">Dispute</option>';
-                    r_string = '<br/>Reason for Dispute<input id="r_reason' + _idx + '" type="text"></input></th>';
-                    break;
-                case orderStatus.Dispute.code:
-                    _date = _arr[_idx].disputeOpened + '<br/>' + _arr[_idx].dispute;
-                    _action += '<option value="Resolve">Resolve</option>';
-                    r_string = '<br/>Reason for Resolution<input id="r_reason' + _idx + '" type="text"></input></th>';
-                    break;
-                case orderStatus.Resolve.code:
+                case orderStatus.Accepted.code:
                     _date = _arr[_idx].disputeResolved + '<br/>' + _arr[_idx].resolve;
                     _action += '<option value="AuthorisePayment">Authorise Payment</option>';
                     break;
-                case orderStatus.Ordered.code:
-                    _date = _arr[_idx].ordered;
-                    break;
                 case orderStatus.Created.code:
                     _date = _arr[_idx].created;
-                    _action += '<option value="Purchase">Purchase</option>'
                     _action += '<option value="Cancel">Cancel</option>'
                     break;
                 case orderStatus.Authorize.code:
                     _date = _arr[_idx].approved;
-                    break;
-                case orderStatus.Bought.code:
-                    _date = _arr[_idx].created;
-                    _action += '<option value="Cancel">Cancel</option>'
-                    break;
-                case orderStatus.Delivering.code:
-                    _date = _arr[_idx].delivering;
                     break;
                 case orderStatus.Cancelled.code:
                     _date = _arr[_idx].cancelled;
@@ -320,12 +293,12 @@ function formatOrders(_target, _orders) {
                 default:
                     break;
             }
-            
+
             let _button = '<th><button id="r_btn_' + _idx + '">Execute</button></th>';
             _action += '</select>';
-            
+
             if (_idx > 0) {
-                 _str += '<div class="spacer"></div>'; 
+                 _str += '<div class="spacer"></div>';
             }
 
             _str += '<table class="wide"><tr><th>OrderId</th><th>Status</th><th class="centre">Total</th><th colspan="3" class="right">Manufacturer: '+ findMember(_arr[_idx].manufacturer.split('#')[1], manufacturer).companyName + '</th></tr>';
@@ -340,12 +313,8 @@ function formatOrders(_target, _orders) {
             _str += '</table>';
         })(each, _orders);
     }
-    // append the newly built order table to the web page
+
     _target.append(_str);
-    //
-    // now that the page has been placed into the browser, all of the id tags created in the previous routine can now be referenced.
-    // iterate through the page and make all of the different parts of the page active.
-    //
     for (let each in _orders) {
         (function (_idx, _arr) {
             $('#r_btn_' + _idx).on('click', function () {
@@ -353,12 +322,180 @@ function formatOrders(_target, _orders) {
                 options.action = $('#r_action' + _idx).find(':selected').text();
                 options.orderId = $('#r_order' + _idx).text();
                 options.participant = $('#retailer').val();
-                if ((options.action === 'Dispute') || (options.action === 'Resolve')) { 
-                    options.reason = $('#r_reason' + _idx).val(); 
+                if ((options.action === 'Dispute') || (options.action === 'Resolve')) {
+                    options.reason = $('#r_reason' + _idx).val();
                 }
                 $('#retailer_messages').prepend(formatMessage('Processing ' + options.action + ' for order :' + options.orderId));
-                $.when($.post('/composer/client/orderAction', options)).done(function (_results) { 
-                    $('#retailer_messages').prepend(formatMessage(_results.result)); 
+                $.when($.post('/composer/client/orderAction', options)).done(function (_results) {
+                    $('#retailer_messages').prepend(formatMessage(_results.result));
+                });
+            });
+        })(each, _orders)
+    }
+}
+
+function listStockroom(){
+    let options = {};
+    options.id = $('#retailer').find(':selected').text();
+
+    options.userID = options.id;
+
+    $.when($.post('/composer/client/getMyStockrooms', options)).done(function (_results) {
+        if ((typeof (_results.stockrooms) === 'undefined') || (_results.stockrooms === null)) {
+            console.log('error getting stockrooms: ', _results);
+        }
+        else {
+            console.log(_results.stockrooms);
+            if (_results.stockrooms.length < 1) {
+                $('#orderDiv').empty(); $('#orderDiv').append(formatMessage('no product available' + options.id));
+            }
+            else {
+                formatRetailerStockrooms($('#orderDiv'), (_results.stockrooms));
+            }
+        }
+    });
+}
+
+function formatRetailerStockrooms(_target,_stock){
+    _target.empty();
+    let _str = '';
+    let _date = '';
+    for (let each in _stock) {
+        (function (_idx, _arr) {
+           
+            if (_idx > 0) { _str += '<div class="spacer"></div>'; }
+            _str += '<div class="acc_header off" id="f_stockroom' + _idx + '_h" target="f_stockroom' + _idx + '_b"><table class="wide"><tr><th>Product Name</th><th class="right">Total Quantity</th></tr>';
+            _str += '<tr><th id ="f_stockroom' + _idx + '" class="showFocus" width="20%">' + JSON.parse(_arr[_idx]).ProductName + '</th><th class="right">' + JSON.parse(_arr[_idx]).Quantity + '</th></tr></table></div>';
+            
+            _str += formatStockroomDetail(_idx, (_arr[_idx]));
+        })(each, _stock);
+    }
+    _target.append(_str);
+    for (let each in _stock) {
+        (function (_idx, _arr) {
+            $('#f_stockroom' + _idx).on('click', function () {
+                accToggle('orderDiv', 'f_stockroom' + _idx + '_b', 'f_stockroom' + _idx + '_h');
+            });
+            $('#f_stockroom' + _idx + '_b').on('click', function () {
+                accToggle('orderDiv', 'f_stockroom' + _idx + '_b', 'f_stockroom' + _idx + '_h');
+            });
+        })(each, _stock);
+    }
+}
+
+function formatStockroomDetail(_cur,_stockroom){
+    let _out = '<div class="acc_body off" id="f_stockroom' + _cur + '_b">';
+    let _stockrooms = (JSON.parse(_stockroom));
+
+    for(var j=0;j<_stockrooms.Inventory.length;j++){
+        _out += '<h3>Manufacturer : \t' + _stockrooms.Inventory[j].Manufacturer + '\t\t Quantity: '+ _stockrooms.Inventory[j].Quantity +'</h3>';
+        _out += '<table class="wide"><tr><th>BatchID</th><th>MFG Date</th><th>quantity</th></tr>';
+        for(var i=0 ; i<_stockrooms.Inventory[j].Batches.length ; i++){
+            _out += '<tr><td>'+ _stockrooms.Inventory[j].Batches[i].BatchId +'</td><td>' + _stockrooms.Inventory[j].Batches[i].MFGDate + '</td><td>' + _stockrooms.Inventory[j].Batches[i].Quantity + '</td></tr>';
+        }
+        _out += '</table>'
+    }
+    _out += '</div>'
+    return _out;
+}
+
+function customerOrderDetails(){
+    let options = {};
+
+    options.id = $('#retailer').find(':selected').text();
+
+    options.userID = options.id;
+
+    $.when($.post('/composer/client/getMyCustomerOrders', options)).done(function (_results) {
+        if ((typeof (_results.orders) === 'undefined') || (_results.orders === null)) {
+            console.log('error getting orders: ', _results);
+        }
+        else {
+            if (_results.orders.length < 1) {
+                $('#orderDiv').empty(); $('#orderDiv').append(formatMessage('no product available' + options.id));
+            }
+            else {
+                formatCustomerOrder($('#orderDiv'), _results.orders);
+            }
+        }
+    });
+
+}
+
+function formatCustomerOrder(_target, _orders) {
+    _target.empty();
+    let _str = '';
+    let _date = '';
+
+    for (let each in _orders) {
+        (function (_idx, _arr) {
+            let _action = '<th><select id=rc_action' + _idx + '><option value="NoAction">Take no Action</option>';
+
+            let r_string;
+
+            r_string = '</th>';
+
+            switch (JSON.parse(_arr[_idx].status).code) {
+                case orderStatus.PayRequest.code:
+                    _date = _arr[_idx].paymentRequested;
+                    break;
+                case orderStatus.Accepted.code:
+                    _date = _arr[_idx].accepted;
+                    _action += '<option value="PayRequest">Request Payment</option>';
+                    break;
+                case orderStatus.Created.code:
+                    _date = _arr[_idx].created;
+                    _action += '<option value="AcceptOrder">Accept Order</option>';
+                    break;
+                case orderStatus.Authorize.code:
+                    _date = _arr[_idx].approved;
+                    break;
+                case orderStatus.Cancelled.code:
+                    _date = _arr[_idx].cancelled;
+                    break;
+                case orderStatus.Paid.code:
+                    _date = _arr[_idx].paid;
+                    break;
+                default:
+                    break;
+            }
+            let _button = '<th><button id="rc_btn_' + _idx + '">Execute</button></th>';
+            _action += '</select>';
+
+            if (_idx > 0) {
+                 _str += '<div class="spacer"></div>';
+            }
+
+            _str += '<table class="wide"><tr><th>OrderId</th><th>Status</th><th class="centre">Total</th><th colspan="3" class="right">Customer : '+ findMember(_arr[_idx].customer.split('#')[1], customers).companyName + '</th></tr>';
+            _str += '<tr><th id ="rc_order' + _idx + '" width="20%">' + _arr[_idx].id + '</th><th width="50%">' + JSON.parse(_arr[_idx].status).text + ': ' + _date + '</th><th class="right">$' + _arr[_idx].amount + '.00</th>' + _action + r_string + _button + '</tr></table>';
+            _str += '<table class="wide"><tr align="center"><th>Product Name</th><th>Manufacturer Name</th><th>Quantity</th><th>Price</th></tr>'
+            console.log(_arr[_idx].items);
+            let itms = (_arr[_idx].items);
+            for (let every in itms) {
+                (function (_idx2, _arr2) {
+                    let _item = JSON.parse(_arr2[_idx2]);
+                    _str += '<tr><td align="center" width="20%">' + _item.ProductName + '</td><td width="50%">' + _item.Manufacturer + '</td><td align="center">' + _item.Quantity + '</td><td align="right">$' + (_item.Quantity*_item.MRP) + '.00</td><tr>';
+                })(every, itms);
+            }
+            _str += '</table>';
+        })(each, _orders);
+    }
+
+    _target.append(_str);
+    for (let each in _orders) {
+        (function (_idx, _arr) {
+            $('#rc_btn_' + _idx).on('click', function () {
+                let options = {};
+                options.action = $('#rc_action' + _idx).find(':selected').text();
+                options.retailer = $('#retailer').val();
+                options.orderId = $('#rc_order' + _idx).text();
+                options.participant = $('#retailer').val();
+                if ((options.action === 'Dispute') || (options.action === 'Resolve')) {
+                    options.reason = $('#rc_reason' + _idx).val();
+                }
+                $('#retailer_messages').prepend(formatMessage('Processing ' + options.action + ' for order :' + options.orderId));
+                $.when($.post('/composer/client/customerOrderAction', options)).done(function (_results) {
+                    $('#retailer_messages').prepend(formatMessage(_results.result));
                 });
             });
         })(each, _orders)

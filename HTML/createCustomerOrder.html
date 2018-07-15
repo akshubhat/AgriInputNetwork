@@ -1,0 +1,57 @@
+<div class="acc_header off" id="customerOrderForm">
+    <h3 id="title"></h3>
+    <h4>
+        <span id="selectRetailer">Select Retailer : </span>
+        <select id="retailerField"></select>
+    </h4>
+    <h4>
+        <span id="selectFinanceCoOrder">Select FinanceCo : </span>
+        <select id="financeCoOrder"></select>
+    </h4>
+    <table width="100%">
+        <tr>
+            <th>OrderId</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Total</th>
+        </tr>
+        <tr>
+            <td id="orderNo" align="center"></td>
+            <td id="status" align="center"></td>
+            <td id="today" align="center"></td>
+            <td id="orderAmount" align="right" width="15%"></td>
+            </td>
+    </table>
+    <div class="spacer"></div>
+    <table width="100%" id="availableItemTable">
+        <tr>
+            <th>Product Name</th>
+            <th>Manufacturer</th>
+            <th>MRP</th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tr>
+            <td>
+                <select id="selectProduct"></select>
+            </td>
+            <td >
+                <select id="selectInventory"></select>
+            </td>
+            <td id="mrp"></td>
+            <td >
+                <button class="showfocus wide" id="addProduct">Add Item</button>
+            </td>
+            <td >
+                <button class="showfocus wide" id="productDetails">Details</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="acc_body off" id="stockDetail">
+    
+</div>
+<div>
+    <button class- "wide" id="cancelNewCustomerOrder">Cancel</button>
+    <button class- "wide" id="submitNewCustomerOrder">Submit</button>
+</div>

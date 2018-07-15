@@ -16,8 +16,10 @@ function memberLoad ()
     options3.registry = 'AgricultureOrganisation';
     let options4 = {};
     options4.registry = 'FinanceCo';
+    let options5 = {};
+    options5.registry = 'Customer';
     $.when($.post('/composer/admin/getMembers', options), $.post('/composer/admin/getMembers', options2),
-        $.post('/composer/admin/getMembers', options3), $.post('/composer/admin/getMembers', options4)).done(function (_manufacturer, _retailers, _agriOrgs, _financeCos)
+        $.post('/composer/admin/getMembers', options3), $.post('/composer/admin/getMembers', options4). $.post('/composer/admin/getMembers', options5)).done(function (_manufacturer, _retailers, _agriOrgs, _financeCos, _customers)
         {
             retailers = _retailers[0].members;
             manufacturer = _manufacturer[0].members;
@@ -26,6 +28,10 @@ function memberLoad ()
             ao_string = _getMembers(agriOrgs);
             financeCos = _financeCos[0].members;
             fc_string = _getMembers(financeCos);
+            customers = _customers[0].members;
+            c_string = _getMembers(customers);
+            retailers = _retailers[0].members;
+            r_string = _getMembers(retailers);
         });
 }
 
@@ -45,8 +51,10 @@ function deferredMemberLoad()
     options3.registry = 'AgricultureOrganisation';
     let options4 = {};
     options4.registry = 'FinanceCo';
+    let options5 = {};
+    options5.registry = 'Customer';
     $.when($.post('/composer/admin/getMembers', options), $.post('/composer/admin/getMembers', options2),
-        $.post('/composer/admin/getMembers', options3), $.post('/composer/admin/getMembers', options4)).done(function (_manufacturer, _retailers, _agriOrgs, _financeCos){
+        $.post('/composer/admin/getMembers', options3), $.post('/composer/admin/getMembers', options4), $.post('/composer/admin/getMembers', options5)).done(function (_manufacturer, _retailers, _agriOrgs, _financeCos, _customers){
             retailers = _retailers[0].members;
             manufacturer = _manufacturer[0].members;
             m_string = _getMembers(manufacturer);
@@ -54,6 +62,10 @@ function deferredMemberLoad()
             ao_string = _getMembers(agriOrgs);
             financeCos = _financeCos[0].members;
             fc_string = _getMembers(financeCos);
+            customers = _customers[0].members;
+            c_string = _getMembers(customers);
+            retailers = _retailers[0].members;
+            r_string = _getMembers(retailers);
             d_prompts.resolve();
         }).fail(d_prompts.reject);
     return d_prompts.promise();

@@ -61,7 +61,7 @@ function listFinanceOrders() {
             $('#' + financeCOorderDiv).empty(); $('#' + financeCOorderDiv).append(formatMessage('No orders for the financeCo: ' + options.id));
         }
         else {
-            orders = _results.orders; 
+            orders = _results.orders;
             //console.log(orders);
             formatFinanceOrders($('#' + financeCOorderDiv), orders);
         }
@@ -71,7 +71,7 @@ function listFinanceOrders() {
 
 function formatFinanceOrders(_target, _orders) {
     _target.empty();
-    let _str = ''; 
+    let _str = '';
     let _date = '';
     for (let each in _orders) {
         (function (_idx, _arr) {
@@ -89,15 +89,6 @@ function formatFinanceOrders(_target, _orders) {
                 case orderStatus.PayRequest.code:
                     _date = _arr[_idx].paymentRequested;
                     break;
-                case orderStatus.Delivered.code:
-                    _date = _arr[_idx].delivered;
-                    break;
-                case orderStatus.Dispute.code:
-                    _date = _arr[_idx].disputeOpened + '<br/>' + _arr[_idx].dispute;
-                    break;
-                case orderStatus.Resolve.code:
-                    _date = _arr[_idx].disputeResolved + '<br/>' + _arr[_idx].resolve;
-                    break;
                 case orderStatus.Created.code:
                     _date = _arr[_idx].created;
                     break;
@@ -108,17 +99,8 @@ function formatFinanceOrders(_target, _orders) {
                     _date = _arr[_idx].approved;
                     _action += '<option value="Pay">Pay</option>';
                     break;
-                case orderStatus.Bought.code:
-                    _date = _arr[_idx].bought;
-                    break;
-                case orderStatus.Delivering.code:
-                    _date = _arr[_idx].delivering;
-                    break;
-                case orderStatus.Ordered.code:
-                    _date = _arr[_idx].ordered;
-                    break;
-                case orderStatus.Refund.code:
-                    _date = _arr[_idx].orderRefunded + '<br/>' + _arr[_idx].refund;
+                case orderStatus.Accepted.code:
+                    _date = _arr[_idx].accepted;
                     break;
                 case orderStatus.Paid.code:
                     _date = _arr[_idx].paid;
@@ -134,23 +116,23 @@ function formatFinanceOrders(_target, _orders) {
             _str += formatFinanceDetail(_idx, _arr[_idx]);
         })(each, _orders);
     }
-    
+
     _target.append(_str);
     for (let each in _orders) {
         (function (_idx, _arr) {
-            $('#f_order' + _idx).on('click', function () { 
-                accToggle('financeCOorderDiv', 'f_order' + _idx + '_b', 'f_order' + _idx + '_h'); 
+            $('#f_order' + _idx).on('click', function () {
+                accToggle('financeCOorderDiv', 'f_order' + _idx + '_b', 'f_order' + _idx + '_h');
             });
-            $('#f_order' + _idx + '_b').on('click', function () { 
-                accToggle('financeCOorderDiv', 'f_order' + _idx + '_b', 'f_order' + _idx + '_h'); 
+            $('#f_order' + _idx + '_b').on('click', function () {
+                accToggle('financeCOorderDiv', 'f_order' + _idx + '_b', 'f_order' + _idx + '_h');
             });
             $('#f_btn_' + _idx).on('click', function () {
                 let options = {};
                 options.action = $('#f_action' + _idx).find(':selected').text();
-                options.orderNo = $('#f_order' + _idx).text();
+                options.orderId = $('#f_order' + _idx).text();
                 options.participant = $('#financeCoField').find(':selected').text();
                 //console.log(options);
-                $('#finance_messages').prepend(formatMessage('Processing ' + options.action + ' request for f_order number: ' + options.orderNo));
+                $('#finance_messages').prepend(formatMessage('Processing ' + options.action + ' request for f_order number: ' + options.orderId));
                 $.when($.post('/composer/client/orderAction', options)).done(function (_results) {
                     //console.log(_results);
                     $('#finance_messages').prepend(formatMessage(_results.result));
@@ -167,19 +149,8 @@ function formatFinanceDetail(_cur, _order) {
     _out += '<table class="wide"><tr><th>Status</th><th>By</th><th>Date</th><th>Comments</th></tr>';
     _out += '<tr><td>Created</td><td>' + _order.retailer + '</td><td>' + _order.created + '</td><td></td></tr>';
     _out += (_order.cancelled === '') ? '<tr><td>Cancelled?</td><td></td><td>Not yet Cancelled</td><td></td></tr>' : '<tr><td>Cancelled</td><td>' + _order.retailer + '</td><td>' + _order.cancelled + '</td><td></td></tr>';
-    _out += (_order.bought === '') ? '<tr><td>Order Placed</td><td></td><td>Order not Placed</td><td></td></tr>' : '<tr><td>OrderPlaced</td><td>' + _order.retailer + '</td><td>' + _order.ordered + '</td><td></td></tr>';
-    _out += (_order.ordered === '') ? '<tr><td>Order Accepted</td><td></td><td>Order Pending</td><td></td></tr>' : '<tr><td>Order Accepted</td><td>' + _order.manufacturer + '</td><td>' + _order.accepted + '</td><td></td></tr>';
-    // _out += (_order.requestShipment === '') ? '<tr><td id="shippingRequested">' + textPrompts.financeCoOrder.shippingRequested + '</td><td></td><td id="noRequestShip">' + textPrompts.financeCoOrder.noRequestShip + '</td><td></td></tr>' : '<tr><td id="shippingRequested">' + textPrompts.financeCoOrder.shippingRequested + '</td><td>' + _order.provider + '</td><td>' + _order.requestShipment + '</td><td></td></tr>';
-    _out += (_order.delivering === '') ? '<tr><td>Delivering</td><td></td><td >Delivery not Started</td><td></td></tr>' : '<tr><td>Delivering</td><td>' + _order.manufacturer + '</td><td>' + _order.delivering + '</td><td></td></tr>';
-    _out += (_order.delivered === '') ? '<tr><td>Delivered</td><td></td><td>Not yet Delivered</td><td></td></tr>' : '<tr><td>Delivered</td><td>' + _order.manufacturer + '</td><td>' + _order.delivered + '</td><td></td></tr>';
-    _out += (_order.paymentRequested === '') ? '<tr><td>Payment Requested</td><td></td><td>Not yet requested</td><td></td></tr>' : '<tr><td>Payment Requested</td><td></td><td>' + _order.paymentRequested + '</td><td></td></tr>';
-    _out += (_order.disputeOpened === '') ? '<tr><td>Dispute Opened</td><td></td><td>No dispute</td><td></td></tr>' : '<tr><td>Dispute Opened</td><td>' + _order.retailer + '</td><td>' + _order.disputeOpened + '</td><td>' + _order.dispute + '</td></tr>';
-    if (_order.disputeResolved === '') {
-        if (_order.disputeOpened === '') { _out += '<tr><td>Dispute Resolved</td><td></td><td>not in dispute</td><td></td></tr>'; }
-        else { _out += '<tr><td>Dispute Resolved</td><td></td><td>Dispute is Unresolved</td><td></td></tr>'; }
-    }
-    else { _out += '<tr><td>Dispute Resolved</td><td></td><td>' + _order.disputeResolved + '</td><td>' + _order.resolve + '</td></tr>'; }
-    //_out += (_order.orderRefunded === '') ? '<tr><td>Refund?</td><td></td><td>(No Refund in Process)</td><td></td></tr>' : '<tr><td>Refund?</td><td></td><td>' + _order.orderRefunded + '</td><td>' + _order.refund + '</td></tr>';
+    _out += (_order.accepted === '') ? '<tr><td>Order Accepted</td><td></td><td>Order Pending</td><td></td></tr>' : '<tr><td>Order Accepted</td><td>' + _order.manufacturer + '</td><td>' + _order.accepted + '</td><td></td></tr>';
+    _out += (_order.paymentRequested === '') ? '<tr><td>Payment Requested</td><td></td><td>Not yet requested</td><td></td></tr>' : '<tr><td>Payment Requested</td><td>'+_order.retailer+'</td><td>' + _order.paymentRequested + '</td><td></td></tr>';
     _out += (_order.approved === '') ? '<tr><td>Payment Approved</td><td></td><td>(No Approval from retailer)</td><td></td></tr>' : '<tr><td>Payment Approved</td><td>' + _order.retailer + '</td><td>' + _order.approved + '</td><td></td></tr>';
     _out += (_order.paid === '') ? '<tr><td>Paid</td><td></td><td>(UnPaid)</td><td></td></tr></table></div>' : '<tr><td>Paid</td><td>' + _order.financeCo + '</td><td>' + _order.paid + '</td><td></td></tr></table></div>';
     return _out;

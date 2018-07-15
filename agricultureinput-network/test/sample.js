@@ -29,21 +29,12 @@ let govFinBody;
 let agriOrg;
 let orderAmount = 0;
 let orderStatus = {
-    'Created': {'code': 1, 'text': 'Order Created'},
-    'Bought': {'code': 2, 'text': 'Order Purchased'},
-    'Cancelled': {'code': 3, 'text': 'Order Cancelled'},
-    'Ordered': {'code': 4, 'text': 'Order Placed'},
-    'ShipRequest': {'code': 5, 'text': 'Shipping Requested'},
-    'Delivered': {'code': 6, 'text': 'Order Delivered'},
-    'Delivering': {'code': 15, 'text': 'Order being Delivered'},
-    'Backordered': {'code': 7, 'text': 'Order Backordered'},
-    'Dispute': {'code': 8, 'text': 'Order Disputed'},
-    'Resolve': {'code': 9, 'text': 'Order Dispute Resolved'},
-    'PayRequest': {'code': 10, 'text': 'Payment Requested'},
-    'Authorize': {'code': 11, 'text': 'Payment Approved'},
-    'Paid': {'code': 14, 'text': 'Payment Processed'},
-    'Refund': {'code': 12, 'text': 'Order Refund Requested'},
-    'Refunded': {'code': 13, 'text': 'Order Refunded'}
+    Created: {code: 1, text: 'Order Created'},
+    Cancelled: {code: 2, text: 'Order Cancelled'},
+    Accepted: {code: 3, text: 'Order Placed'},
+    PayRequest: {code: 4, text: 'Payment Requested'},
+    Authorize: {code: 5, text: 'Payment Approved'},
+    Paid: {code: 6, text: 'Payment Processed'}
 };
 
 let productStatus = {
@@ -78,7 +69,6 @@ function createOrderTemplate (_inbound)
     _inbound.disputeOpened = '';
     _inbound.disputeResolved = '';
     _inbound.paymentRequested = '';
-    _inbound.orderRefunded = '';
     _inbound.approved = '';
     _inbound.paid = '';
     _inbound.items = [];
@@ -94,7 +84,6 @@ function createProductTemplate (_inbound)
         _inbound.approved =false;
         _inbound.rating ='';
         _inbound.mrp = 0;
-        _inbound.subsidy = 0;
         _inbound.batches = [];
         _inbound.content = [];
         _inbound.status = '';
@@ -299,7 +288,7 @@ describe('Agriculture Trading', function () {
                             return businessNetworkConnection.getAssetRegistry(NS + '.Order');
                         })
                         .then((assetRegistry) => {
-                          
+
                             return assetRegistry.get(orderId);
                         })
                         .then((newOrder) => {
@@ -373,7 +362,7 @@ describe('Agriculture Trading', function () {
                 .then((orderAccept) => {
                     JSON.parse(orderAccept.status).text.should.equal(orderStatus.Delivering.text);
                 })
-            }) 
+            })
         });
     });
 
@@ -579,40 +568,5 @@ describe('Agriculture Trading', function () {
             })
         });
     });
-
-    describe('#Refund', () => {
-        it('should be able to Refund the amount' , () => {
-            const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
-
-            const refundPayment = factory.newTransaction(NS,'Refund');
-
-            return businessNetworkConnection.getAssetRegistry(NS+'.Order')
-            .then((assetRegistry) => {
-                return assetRegistry.get(orderId);
-            })
-            .then((newOrder) => {
-
-                newOrder.retailer.$identifier.should.equal(retailerId);
-                newOrder.$identifier.should.equal(orderId);
-
-                refundPayment.refund = 'Order 12345 Refunded'
-                refundPayment.order = factory.newRelationship(NS,'Order',newOrder.$identifier);
-                refundPayment.manufacturer = factory.newRelationship(NS,'Manufacturer',manufacturerId);
-                refundPayment.financeCo = factory.newRelationship(NS,'FinanceCo',financeCoId);
-
-                return businessNetworkConnection.submitTransaction(refundPayment)
-                .then(() => {
-                    return businessNetworkConnection.getAssetRegistry(NS+'.Order');
-                })
-                .then((assetRegistry) => {
-                    return assetRegistry.get(orderId);
-                })
-                .then((newOrder) => {
-                    JSON.parse(newOrder.status).text.should.equal(orderStatus.Refund.text);
-                })
-            })
-        });
-    });
-
 
 });

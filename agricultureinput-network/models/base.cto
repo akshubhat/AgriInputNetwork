@@ -3,3 +3,15 @@ namespace composer.base
 abstract participant Member {
     o String companyName
 }
+
+abstract asset ord {
+    o String status
+    o Integer amount
+    o String created
+    o String cancelled
+    o String accepted
+    o String paymentRequested
+    o String approved
+    o String paid
+    o String[] items
+}

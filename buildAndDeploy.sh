@@ -70,7 +70,7 @@ composer network ping --card admin@$NETWORK_NAME
 # echo ' '
 # echo ' '
 # echo '====================================================================================='
-# echo -e '                               testing rest server \n when this completes, \n  go to your favorite browser \n and enter ec2-18-207-206-152.compute-1.amazonaws.com:3000/explorer '
+# echo -e '                               testing rest server \n when this completes, \n  go to your favorite browser \n and enter localhost:3000/explorer '
 # echo '====================================================================================='
 # echo ' '
 # echo '====================================================================================='

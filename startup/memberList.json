@@ -8,11 +8,10 @@
         {"type":"Retailer", "pw":"rowena", "companyName":"ravenclaw", "id":"rowena@ravenclaw.com"},
         {"type":"Retailer", "pw":"godric", "companyName":"gryffindor", "id":"godric@gryffindor.com"},
         {"type":"Retailer", "pw":"albus", "companyName":"phoenix", "id":"albus@phoenix.com"},
-        {"type":"Retailer", "pw":"garric", "companyName":"Ollivander", "id":"garric@ollivander.com"},
-        {"type":"Retailer", "pw":"rita", "companyName":"daily prophet", "id":"rita@prophet.com"},
-        {"type":"Retailer", "pw":"rolanda", "companyName":"quidditch", "id":"rolanda@quidditch.com"},
+        {"type":"Customer", "pw":"garric", "companyName":"Ollivander", "id":"garric@ollivander.com"},
+        {"type":"Customer", "pw":"rita", "companyName":"daily prophet", "id":"rita@prophet.com"},
+        {"type":"Customer", "pw":"rolanda", "companyName":"quidditch", "id":"rolanda@quidditch.com"},
         {"type":"FinanceCo", "pw":"bogrod", "companyName":"gringotts", "id":"bogrod@gringotts.com"},
-        {"type":"GovernmentFinanceBody", "pw":"griphook", "companyName":"Nabard", "id":"griphook@nabard.com"},
         {"type":"AgricultureOrganisation", "pw":"tom", "companyName":"Department of Agriculture", "id":"tom@doa.com"}
     ],
     "assets":
@@ -22,6 +21,14 @@
         {"type":"Product" , "id":"ron@dupont.com001", "productName":"NPK", "productType":"Fertilizer" , "approved":true, "rating":"3", "manufacturer":"ron@dupont.com" , "agriOrg":"tom@doa.com", "content":[{"contentNo":"1","name":"Nitrogen","percentage":"50"},{"contentNo":"1","name":"Cu","percentage":"40"}],"mrp":350},
         {"type":"Product" , "id":"ron@dupont.com002", "productName":"Uria", "productType":"" , "approved":false, "rating":"0", "manufacturer":"ron@dupont.com" , "agriOrg":"tom@doa.com", "content":[{"contentNo":"1","name":"Nitrogen","percentage":"50"},{"contentNo":"1","name":"Cu","percentage":"40"}],"mrp":700},
         {"type":"Product" , "id":"harry@rallies.com001", "productName":"Uria", "productType":"Fertilizer" , "approved":true, "rating":"10", "manufacturer":"harry@rallies.com" , "agriOrg":"tom@doa.com", "content":[{"contentNo":"1","name":"Nitrogen","percentage":"50"},{"contentNo":"1","name":"Cu","percentage":"40"}],"mrp":500}
-        
+
+    ],
+    "stockrooms":
+    [
+        {"type":"Stockroom", "id":"001", "retailer":"severus@battle.com"},
+        {"type":"Stockroom", "id":"002", "retailer":"salazar@slytherin.com"},
+        {"type":"Stockroom", "id":"003", "retailer":"rowena@ravenclaw.com"},
+        {"type":"Stockroom", "id":"004", "retailer":"godric@gryffindor.com"},
+        {"type":"Stockroom", "id":"005", "retailer":"albus@phoenix.com"}
     ]
 }

@@ -3,7 +3,6 @@
 let aoProductDiv = 'aoProductDiv';
 
 function loadAgriOrgUX(){
-    //console.log('agri org clicked');
     let toLoad = 'agriOrganisation.html'
     getPort();
     
@@ -55,10 +54,9 @@ function setupAgriOrg(page,port){
 function displayPendingProduct(){
     let option = {};
     option.id = $('#agriOrganisation').find(':selected').text();
-    //console.log(option.id);
+
     option.userId = option.id;
     $.when($.post('/composer/client/getMyProducts',option)).done(function(_result){
-        //console.log('_result');
         if((typeof(_result.Products) === 'undefined') || _result.Products === null){
             console.log('error getting Products: ', _result);
         }
@@ -67,11 +65,9 @@ function displayPendingProduct(){
                 $('#aoProductDiv').empty(); $('#aoProductDiv').append(formatMessage('no product available'));
             }
             else{
-                //console.log(_result.Products);
                 let pendins = _result.Products.filter(function(x){
                     return JSON.parse(x.status).code === productStatus.RequestApproval.code;
                 });
-                console.log(pendins);
                 formatAOproduct($('#aoProductDiv'),pendins);
             }
         }
@@ -81,10 +77,9 @@ function displayPendingProduct(){
 function listAOProducts(){
     let option = {};
     option.id = $('#agriOrganisation').find(':selected').text();
-    //console.log(option.id);
     option.userId = option.id;
     $.when($.post('/composer/client/getMyProducts',option)).done(function(_result){
-        //console.log('_result');
+
         if((typeof(_result.Products) === 'undefined') || _result.Products === null){
             console.log('error getting Products: ', _result);
         }
@@ -93,12 +88,10 @@ function listAOProducts(){
                 $('#aoProductDiv').empty(); $('#aoProductDiv').append(formatMessage('no product available'));
             }
             else{
-                //console.log(_result.Products);
                 formatAOproduct($('#aoProductDiv'), _result.Products);
             }
         }
-    })
-
+    });
 }
 
 function formatAOproduct(_target,_products){   
@@ -117,7 +110,6 @@ function formatAOproduct(_target,_products){
 
                 case productStatus.ProductCreated.code:
                     _date = _arr[_idx].productCreated;
-                    
                     break;
                 case productStatus.RequestApproval.code:
                     _date = _arr[_idx].requestApproval;
@@ -158,12 +150,11 @@ function formatAOproduct(_target,_products){
                 let option = {};
                 option.action = $('#ao_action'+_idx).find(':selected').text();
                 option.productId = $('#ao_product'+_idx).text();
-                //console.log(option.productId);
                 option.participant = $('#agriOrganisation').val();
                 option.manufacturer = _arr[_idx].manufacturer;
+
                 if(option.action === 'Approve Product'){
                     option.rating = parseInt($('#ao_rating'+_idx).val());
-                    //console.log(option.rating);
                 }
                 $('#org_messages').prepend(formatMessage(option.action + 'for' + option.productId + 'Requested'));
                 $.when($.post('/composer/client/productAction', option)).done(function (_result){ 

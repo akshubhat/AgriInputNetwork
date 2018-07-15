@@ -11,3 +11,43 @@ query selectOrder {
   statement:
       SELECT org.acme.agriinputnetwork.Order
 }
+
+query selectStockroom {
+  description: "Select Stockroom"
+  statement: 
+      SELECT org.acme.agriinputnetwork.Stockroom
+}
+
+query selectProductByManufacturer {
+  description: "Select products of a perticular manufacturer"
+  statement:
+      SELECT org.acme.agriinputnetwork.Product
+        WHERE ( manufacturer ==_$manufacturer)
+}
+
+query selectStockroomByRetailer {
+  description: "Select stock of a perticular retailer"
+  statement:
+      SELECT org.acme.agriinputnetwork.Stockroom
+        WHERE ( retailer ==_$retailer)
+}
+
+query selectCustomerOrder {
+  description: "Select all Orders"
+  statement:
+      SELECT org.acme.agriinputnetwork.Customerorder
+}
+
+query selectOrderbyRetailer {
+  description: "Select order by retailer"
+  statement:
+      SELECT org.acme.agriinputnetwork.Order
+        WHERE (retailer == _$retailer)
+}
+
+query selectCustomerOrderbyRetailer {
+  description: "Select order by retailer"
+  statement:
+      SELECT org.acme.agriinputnetwork.Customerorder
+        WHERE (retailer == _$retailer)
+}

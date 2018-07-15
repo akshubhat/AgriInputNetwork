@@ -1,65 +1,87 @@
-<html><head>
+<html>
+
+<head>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Test Demo">
     <meta name="author" content="Raj Dhamsaniya, SEAS student">
 
-    <title>Test Demo</title>
+    <title>AgriInput</title>
 </head>
 
 <body class="top-navigation gray-bg">
 
     <!-- <div id="wrapper"> -->
-        <!-- <div id="page-wrapper" class="gray-bg"> -->
-        <!-- <div class="row border-bottom white-bg"> -->
-        <nav class="navbar navbar-static-top" role="navigation">
-            <div class="navbar-header">
-                <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
-                    <i class="fa fa-reorder"></i>
-                </button>
-                <a href="#" class="navbar-brand">Agriculture Input</a>
-            </div>
-            <div class="navbar-collapse collapse" id="navbar">
-                <ul class="nav navbar-nav">
-
-                    <li class="dropdown">
-                        <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Admin <span class="caret"></span></a>
-                        <ul role="menu" class="dropdown-menu">
-                            <li><a onclick="loadAdminUX()"> Load Admin UI </a></li>
-                            <li><a onclick="preLoad()"> Preload Network </a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Roles <span class="caret"></span></a>
-                        <ul role="menu" class="dropdown-menu">
-                            <li><a onclick="loadManufacturerUX()">Load Manufacturer UI</a></li>
-                            <li><a onclick="loadAgriOrgUX()">Load AgriOrg UI</a></li>
-                            <li><a onclick="loadRetailerUX()">Load Retailer UI</a></li>
-                            <li><a onclick="loadFinanceCoUX()">Load FinanceCo UI</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <ul class="nav navbar-top-links navbar-right">
-                    <li>
-                        <a href="login.html">
-                            <i class="fa fa-sign-out"></i> Log out
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <!-- </div> -->
-        <div class="wrapper" id="body">
-
+    <!-- <div id="page-wrapper" class="gray-bg"> -->
+    <!-- <div class="row border-bottom white-bg"> -->
+    <nav class="navbar navbar-static-top" role="navigation">
+        <div class="navbar-header">
+            <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed"
+                type="button">
+                <i class="fa fa-reorder"></i>
+            </button>
+            <a href="#" class="navbar-brand">Agriculture Input</a>
         </div>
-        <!-- </div> -->
+        <div class="navbar-collapse collapse" id="navbar">
+            <ul class="nav navbar-nav">
+
+                <li class="dropdown">
+                    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Admin
+                        <span class="caret"></span>
+                    </a>
+                    <ul role="menu" class="dropdown-menu">
+                        <li>
+                            <a onclick="loadAdminUX()"> Load Admin UI </a>
+                        </li>
+                        <li>
+                            <a onclick="preLoad()"> Preload Network </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Roles
+                        <span class="caret"></span>
+                    </a>
+                    <ul role="menu" class="dropdown-menu">
+                        <li>
+                            <a onclick="loadManufacturerUX()">Load Manufacturer UI</a>
+                        </li>
+                        <li>
+                            <a onclick="loadAgriOrgUX()">Load AgriOrg UI</a>
+                        </li>
+                        <li>
+                            <a onclick="loadRetailerUX()">Load Retailer UI</a>
+                        </li>
+                        <li>
+                            <a onclick="loadCustomerUX()">Load Customer UI</a>
+                        </li>
+                        <li>
+                            <a onclick="loadFinanceCoUX()">Load FinanceCo UI</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-top-links navbar-right">
+                <li>
+                    <a href="login.html">
+                        <i class="fa fa-sign-out"></i> Log out
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- </div> -->
+    <div class="wrapper" id="body">
+
+    </div>
+    <!-- </div> -->
     <!-- </div> -->
 
     <div class="footer scrollmenu" style="overflow: auto; height: 60px;">
         <div class="pull-right">
             <table>
-                <tr id ="blockchainVisual"></tr>
+                <tr id="blockchainVisual"></tr>
             </table>
         </div>
     </div>
@@ -74,6 +96,7 @@
     <script src="js/ai-events.js"></script>
     <script src="js/ai-agriorganisation.js"></script>
     <script src="js/ai-retailer.js"></script>
+    <script src="js/ai-customer.js"></script>
     <script src="js/ai-financeCo.js"></script>
     <link href="CSS/bootstrap.min.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.css" rel="stylesheet">

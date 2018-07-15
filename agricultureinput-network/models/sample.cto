@@ -9,10 +9,6 @@ participant FinanceCo identified by financeCoId extends Member {
     o String financeCoId
 }
 
-participant GovernmentFinanceBody identified by govFinanceId extends Member {
-    o String govFinanceId
-}
-
 participant AgricultureOrganisation identified by agriOrganisationId extends Member {
     o String agriOrganisationId
 }
@@ -21,14 +17,18 @@ participant Retailer identified by retailerId extends Member {
     o String retailerId
 }
 
+participant Customer identified by customerId extends Member {
+  o String customerId
+}
+
 asset Product identified by productId {
     o String productId
     o String productName
     o Boolean approved default = false
     o String rating default = '0'
     o Integer mrp
-    o Integer subsidy
     o String[] batches
+    o String[] archive
     o String[] content
     o String status
     o String requestApproval
@@ -42,30 +42,26 @@ asset Product identified by productId {
     --> AgricultureOrganisation agriOrganisation
 }
 
+asset Stockroom identified by stockroomId {
 
-asset Order identified by orderId {
+    o String stockroomId
+    o String[] stock
+    --> Retailer retailer
+}
+
+asset Customerorder identified by customerOrderId  extends ord {
+    o String customerOrderId
+    --> Customer customer
+    --> Retailer retailer
+    --> FinanceCo financeCo
+}
+
+asset Order identified by orderId  extends ord{
     o String orderId
-    o String status
-    o String dispute
-    o String resolve
-    o String refund
-    o Integer amount
-    o String created
-    o String cancelled
-    o String accepted
-    o String ordered
-    o String delivered
-    o String delivering
-    o String disputeOpened
-    o String disputeResolved
-    o String paymentRequested
-    o String orderRefunded
-    o String approved
-    o String paid
-    o String[] items
     --> Manufacturer manufacturer
     --> Retailer retailer
     --> FinanceCo financeCo
+
 }
 
 transaction CreateProduct {
@@ -115,12 +111,6 @@ transaction CreateOrder {
     --> FinanceCo financeCo
 }
 
-transaction PlaceOrder {
-    --> Order order
-    --> Manufacturer manufacturer
-    --> Retailer retailer
-}
-
 transaction CancelOrder {
     --> Order order
     --> Manufacturer manufacturer
@@ -129,34 +119,8 @@ transaction CancelOrder {
 
 transaction AcceptOrder {
     --> Order order
-    --> Manufacturer manufacturer
-}
-
-transaction Delivering {
-    o String status
-    --> Order order
-    --> Manufacturer manufacturer
-}
-
-transaction Deliver {
-    --> Order order
-    --> Manufacturer manufacturer
-}
-
-transaction Dispute {
-    o String dispute
-    --> Order order
-    --> Manufacturer manufacturer
     --> Retailer retailer
-    --> FinanceCo financeCo
-}
-
-transaction Resolve {
-    o String resolve
-    --> Order order
     --> Manufacturer manufacturer
-    --> Retailer retailer
-    --> FinanceCo financeCo
 }
 
 transaction RequestPayment {
@@ -178,9 +142,41 @@ transaction Pay {
     --> FinanceCo financeCo
 }
 
-transaction Refund {
-    o String refund
-    --> Order order
-    --> Manufacturer manufacturer
+transaction CreateCustomerorder {
+    o Integer amount
+    o String[] items
+    --> Customerorder order
+    --> Customer customer
+    --> Retailer retailer
+    --> FinanceCo financeCo
+}
+
+transaction CancelCustomerorder {
+    --> Customerorder order
+    --> Customer customer
+    --> Retailer retailer
+}
+
+transaction AcceptCustomerorder {
+    --> Customerorder order
+    --> Retailer retailer
+}
+
+transaction RequestCustomerPayment {
+    --> Customerorder order
+    --> Retailer retailer
+    --> FinanceCo financeCo
+}
+
+transaction AuthorizeRetailerPayment {
+    --> Customerorder order
+    --> Customer customer
+    --> FinanceCo financeCo
+}
+
+transaction PayRetailer {
+    --> Customerorder order
+    --> Customer customer
+    --> Retailer retailer
     --> FinanceCo financeCo
 }
