@@ -9,9 +9,10 @@ viewership of content on blockchain network.
 view report for more understanding about build.
 
 ## Installation for Ubuntu 16.04 LTS[1]
+Set python 2.7 as default python command in ubuntu - https://askubuntu.com/questions/101591/how-do-i-install-the-latest-python-2-7-x-or-3-x-on-ubuntu
+
 run following commands
 ```bash
-Set python 2.7 as default python command in ubuntu - link
 sudo apt-get update
 sudo apt-get install -y curl
 sudo apt install unzip
