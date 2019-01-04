@@ -26,10 +26,9 @@ Reboot the system
 
 ## Deploying the business network
 run following commands
-```bash
-Run all.sh to built and test your network.
-Run the shell script builtAndDeploy.sh to deploy the network.
-```
+Run `all.sh` to built and test your network.
+Run the shell script `builtAndDeploy.sh` to deploy the network.
+
 ## References
 - ZeroToBlockchain from IBM RedBook - https://github.com/rddill-IBM/ZeroToBlockchain
 - HyperLedger Composer Documentation - https://hyperledger.github.io/composer/latest/tutorials/developer-tutorial.html
